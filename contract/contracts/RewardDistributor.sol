@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
@@ -6,16 +6,13 @@ import "./RoleManager.sol";
 import "./RecyclingTracker.sol";
 import "./RewardToken.sol";
 
-contract RewardDistributor {
-    RoleManager public roleManager;
-    RecyclingTracker public recyclingTracker;
-    RewardToken public rewardToken;
+contract RewardDistributor is AccessControl {
+    RoleManager public immutable roleManager;
+    RecyclingTracker public immutable recyclingTracker;
+    RewardToken public immutable rewardToken;
 
-    bytes32 public constant RECYCLER_ROLE = keccak256("RECYCLER_ROLE");
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
-
-    uint256 public rewardPerScan = 10 ether; // 10 ERT
-    uint256 public rewardPerVerification = 5 ether; // 5 ERT
+    uint256 public rewardPerScan = 10 ether;
+    uint256 public rewardPerVerification = 5 ether;
 
     event RewardsDistributed(
         uint256 qrId,
@@ -33,12 +30,13 @@ contract RewardDistributor {
         roleManager = RoleManager(_roleManager);
         recyclingTracker = RecyclingTracker(_recyclingTracker);
         rewardToken = RewardToken(_rewardToken);
+        _grantRole(roleManager.ADMIN_ROLE(), msg.sender);
     }
 
     function distributeRewards(uint256 qrId) external {
         require(
-            roleManager.hasRole(RECYCLER_ROLE, msg.sender),
-            "Caller is not a recycler"
+            roleManager.hasRole(roleManager.RECYCLER_ROLE(), msg.sender),
+            "Not a recycler"
         );
         RecyclingTracker.TrackRecord memory record = recyclingTracker
             .trackRecords(qrId);
@@ -50,8 +48,8 @@ contract RewardDistributor {
         address ragPicker = record.ragPicker;
         require(ragPicker != address(0), "No rag picker for QR");
 
-        rewardToken.transfer(ragPicker, rewardPerScan);
-        rewardToken.transfer(msg.sender, rewardPerVerification);
+        rewardToken.mint(ragPicker, rewardPerScan);
+        rewardToken.mint(msg.sender, rewardPerVerification);
 
         emit RewardsDistributed(
             qrId,
@@ -67,10 +65,16 @@ contract RewardDistributor {
         uint256 verifyAmount
     ) external {
         require(
-            roleManager.hasRole(ADMIN_ROLE, msg.sender),
-            "Caller is not an admin"
+            roleManager.hasRole(roleManager.ADMIN_ROLE(), msg.sender),
+            "Not admin"
         );
         rewardPerScan = scanAmount;
         rewardPerVerification = verifyAmount;
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view override returns (bool) {
+        return super.supportsInterface(interfaceId);
     }
 }

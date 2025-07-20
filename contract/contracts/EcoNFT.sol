@@ -1,15 +1,14 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./RoleManager.sol";
 import "./RecyclingTracker.sol";
 
-contract EcoNFT is ERC721, AccessControl {
-    RoleManager public roleManager;
+contract EcoNFT is ERC721URIStorage, AccessControl {
+    RoleManager public immutable roleManager;
     RecyclingTracker public recyclingTracker;
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
     uint256 public nextTokenId;
     mapping(uint256 => uint256) public milestoneLevel;
@@ -27,28 +26,28 @@ contract EcoNFT is ERC721, AccessControl {
     ) ERC721("EcoNFT", "ENFT") {
         roleManager = RoleManager(_roleManager);
         recyclingTracker = RecyclingTracker(_recyclingTracker);
-        _grantRole(ADMIN_ROLE, msg.sender);
+        _grantRole(roleManager.ADMIN_ROLE(), msg.sender);
         nextTokenId = 1;
 
-        milestoneThresholds[1] = 100;
-        milestoneThresholds[2] = 500;
-        milestoneThresholds[3] = 1000;
+        milestoneThresholds[1] = 2;
+        milestoneThresholds[2] = 5;
+        milestoneThresholds[3] = 10;
     }
 
     function setRecyclingTracker(
         address _recyclingTracker
-    ) external onlyRole(ADMIN_ROLE) {
+    ) external onlyRole(roleManager.ADMIN_ROLE()) {
         recyclingTracker = RecyclingTracker(_recyclingTracker);
     }
 
     function mintMilestoneNFT(address to, uint256 _milestoneLevel) external {
         require(
             msg.sender == address(recyclingTracker) ||
-                roleManager.hasRole(ADMIN_ROLE, msg.sender),
-            "Caller is not authorized"
+                roleManager.hasRole(roleManager.ADMIN_ROLE(), msg.sender),
+            "Not authorized"
         );
         require(
-            milestoneThresholds[_milestoneLevel] > 0,
+            _milestoneLevel >= 1 && _milestoneLevel <= 3,
             "Invalid milestone level"
         );
         require(
@@ -59,6 +58,16 @@ contract EcoNFT is ERC721, AccessControl {
 
         uint256 tokenId = nextTokenId++;
         _mint(to, tokenId);
+        _setTokenURI(
+            tokenId,
+            string(
+                abi.encodePacked(
+                    "ipfs://Qm.../metadata/",
+                    uint2str(tokenId),
+                    ".json"
+                )
+            )
+        );
         milestoneLevel[tokenId] = _milestoneLevel;
         emit MilestoneNFTMinted(to, tokenId, _milestoneLevel);
     }
@@ -66,7 +75,7 @@ contract EcoNFT is ERC721, AccessControl {
     function setMilestoneThreshold(
         uint256 level,
         uint256 scanCount
-    ) external onlyRole(ADMIN_ROLE) {
+    ) external onlyRole(roleManager.ADMIN_ROLE()) {
         require(level > 0, "Invalid level");
         require(scanCount > 0, "Invalid scan count");
         milestoneThresholds[level] = scanCount;
@@ -88,7 +97,7 @@ contract EcoNFT is ERC721, AccessControl {
 
     function supportsInterface(
         bytes4 interfaceId
-    ) public view override(ERC721, AccessControl) returns (bool) {
+    ) public view override(ERC721URIStorage, AccessControl) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 

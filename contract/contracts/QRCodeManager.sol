@@ -1,13 +1,11 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./RoleManager.sol";
 
-contract QRCodeManager {
-    RoleManager public roleManager;
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
-    bytes32 public constant MANUFACTURER_ROLE = keccak256("MANUFACTURER_ROLE");
+contract QRCodeManager is AccessControl {
+    RoleManager public immutable roleManager;
 
     uint256 public nextQrId;
     mapping(uint256 => address) public qrToManufacturer;
@@ -19,22 +17,25 @@ contract QRCodeManager {
 
     constructor(address _roleManager) {
         roleManager = RoleManager(_roleManager);
+        _grantRole(roleManager.ADMIN_ROLE(), msg.sender);
         nextQrId = 1;
     }
 
     function generateQRCodes(uint256 amount) external {
         require(
-            roleManager.hasRole(ADMIN_ROLE, msg.sender),
-            "Caller is not an admin"
+            roleManager.hasRole(roleManager.ADMIN_ROLE(), msg.sender),
+            "Not admin"
         );
         require(
             amount > 0 && amount <= 1000,
             "Amount must be between 1 and 1000"
         );
 
+        uint256 start = nextQrId;
+        nextQrId += amount;
         uint256[] memory qrIds = new uint256[](amount);
         for (uint256 i = 0; i < amount; i++) {
-            qrIds[i] = nextQrId++;
+            qrIds[i] = start + i;
         }
         emit QRCodesGenerated(qrIds);
     }
@@ -44,14 +45,14 @@ contract QRCodeManager {
         address manufacturer
     ) external {
         require(
-            roleManager.hasRole(ADMIN_ROLE, msg.sender),
-            "Caller is not an admin"
+            roleManager.hasRole(roleManager.ADMIN_ROLE(), msg.sender),
+            "Not admin"
         );
         require(qrId < nextQrId, "Invalid QR ID");
         require(qrToManufacturer[qrId] == address(0), "QR already assigned");
         require(
-            roleManager.hasRole(MANUFACTURER_ROLE, manufacturer),
-            "Recipient is not a manufacturer"
+            roleManager.hasRole(roleManager.MANUFACTURER_ROLE(), manufacturer),
+            "Not a manufacturer"
         );
 
         qrToManufacturer[qrId] = manufacturer;
@@ -60,13 +61,19 @@ contract QRCodeManager {
 
     function setQRMetadata(uint256 qrId, string calldata ipfsHash) external {
         require(
-            roleManager.hasRole(ADMIN_ROLE, msg.sender),
-            "Caller is not an admin"
+            roleManager.hasRole(roleManager.ADMIN_ROLE(), msg.sender),
+            "Not admin"
         );
         require(qrId < nextQrId, "Invalid QR ID");
         require(bytes(ipfsHash).length > 0, "IPFS hash cannot be empty");
 
         qrMetadata[qrId] = ipfsHash;
         emit QRMetadataSet(qrId, ipfsHash);
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view override returns (bool) {
+        return super.supportsInterface(interfaceId);
     }
 }

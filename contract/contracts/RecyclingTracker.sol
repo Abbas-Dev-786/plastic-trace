@@ -1,15 +1,13 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./RoleManager.sol";
 import "./EcoNFT.sol";
 
-contract RecyclingTracker {
-    RoleManager public roleManager;
-    EcoNFT public ecoNFT;
-    bytes32 public constant RAGPICKER_ROLE = keccak256("RAGPICKER_ROLE");
-    bytes32 public constant RECYCLER_ROLE = keccak256("RECYCLER_ROLE");
+contract RecyclingTracker is AccessControl {
+    RoleManager public immutable roleManager;
+    EcoNFT public immutable ecoNFT;
 
     enum Status {
         Assigned,
@@ -36,12 +34,13 @@ contract RecyclingTracker {
     constructor(address _roleManager, address _ecoNFT) {
         roleManager = RoleManager(_roleManager);
         ecoNFT = EcoNFT(_ecoNFT);
+        _grantRole(roleManager.ADMIN_ROLE(), msg.sender);
     }
 
     function scanQR(uint256 qrId) external {
         require(
-            roleManager.hasRole(RAGPICKER_ROLE, msg.sender),
-            "Caller is not a rag picker"
+            roleManager.hasRole(roleManager.RAGPICKER_ROLE(), msg.sender),
+            "Not a rag picker"
         );
         require(
             trackRecords[qrId].status == Status.Assigned,
@@ -69,8 +68,8 @@ contract RecyclingTracker {
 
     function verifyScan(uint256 qrId) external {
         require(
-            roleManager.hasRole(RECYCLER_ROLE, msg.sender),
-            "Caller is not a recycler"
+            roleManager.hasRole(roleManager.RECYCLER_ROLE(), msg.sender),
+            "Not a recycler"
         );
         require(
             trackRecords[qrId].status == Status.Scanned,
@@ -85,8 +84,8 @@ contract RecyclingTracker {
 
     function markRecycled(uint256 qrId) external {
         require(
-            roleManager.hasRole(RECYCLER_ROLE, msg.sender),
-            "Caller is not a recycler"
+            roleManager.hasRole(roleManager.RECYCLER_ROLE(), msg.sender),
+            "Not a recycler"
         );
         require(
             trackRecords[qrId].status == Status.Verified,
@@ -100,5 +99,11 @@ contract RecyclingTracker {
 
     function getUserScans(address user) external view returns (uint256) {
         return userScans[user];
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view override returns (bool) {
+        return super.supportsInterface(interfaceId);
     }
 }
