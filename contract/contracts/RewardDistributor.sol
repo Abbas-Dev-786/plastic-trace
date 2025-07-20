@@ -38,14 +38,17 @@ contract RewardDistributor is AccessControl {
             roleManager.hasRole(roleManager.RECYCLER_ROLE(), msg.sender),
             "Not a recycler"
         );
-        RecyclingTracker.TrackRecord memory record = recyclingTracker
-            .trackRecords(qrId);
+        (
+            ,
+            address ragPicker,
+            ,
+            RecyclingTracker.Status status,
+
+        ) = recyclingTracker.trackRecords(qrId);
         require(
-            record.status == RecyclingTracker.Status.Verified,
+            status == RecyclingTracker.Status.Verified,
             "QR not in Verified state"
         );
-
-        address ragPicker = record.ragPicker;
         require(ragPicker != address(0), "No rag picker for QR");
 
         rewardToken.mint(ragPicker, rewardPerScan);

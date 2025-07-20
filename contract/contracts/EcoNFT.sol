@@ -1,4 +1,4 @@
-// SPDX-License-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -6,11 +6,13 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./RoleManager.sol";
 import "./RecyclingTracker.sol";
 
-contract EcoNFT is ERC721URIStorage, AccessControl {
+contract EcoNFT is ERC721URIStorage {
     RoleManager public immutable roleManager;
     RecyclingTracker public recyclingTracker;
 
-    uint256 public nextTokenId;
+    string public baseTokenURI = "ipfs://QmExampleHash/metadata/"; // admin can change
+    uint256 public nextTokenId = 1;
+
     mapping(uint256 => uint256) public milestoneLevel;
     mapping(uint256 => uint256) public milestoneThresholds;
 
@@ -19,6 +21,24 @@ contract EcoNFT is ERC721URIStorage, AccessControl {
         uint256 indexed tokenId,
         uint256 milestoneLevel
     );
+    event BaseURIChanged(string newBaseURI);
+
+    modifier onlyAdmin() {
+        require(
+            roleManager.hasRole(roleManager.ADMIN_ROLE(), msg.sender),
+            "Not admin"
+        );
+        _;
+    }
+
+    modifier onlyRecyclingTrackerOrAdmin() {
+        require(
+            msg.sender == address(recyclingTracker) ||
+                roleManager.hasRole(roleManager.ADMIN_ROLE(), msg.sender),
+            "Not authorized"
+        );
+        _;
+    }
 
     constructor(
         address _roleManager,
@@ -26,26 +46,40 @@ contract EcoNFT is ERC721URIStorage, AccessControl {
     ) ERC721("EcoNFT", "ENFT") {
         roleManager = RoleManager(_roleManager);
         recyclingTracker = RecyclingTracker(_recyclingTracker);
-        _grantRole(roleManager.ADMIN_ROLE(), msg.sender);
-        nextTokenId = 1;
 
         milestoneThresholds[1] = 2;
         milestoneThresholds[2] = 5;
         milestoneThresholds[3] = 10;
     }
 
-    function setRecyclingTracker(
-        address _recyclingTracker
-    ) external onlyRole(roleManager.ADMIN_ROLE()) {
+    /* -------------------------------------------------- */
+    /*  Admin                                             */
+    /* -------------------------------------------------- */
+    function setRecyclingTracker(address _recyclingTracker) external onlyAdmin {
         recyclingTracker = RecyclingTracker(_recyclingTracker);
     }
 
-    function mintMilestoneNFT(address to, uint256 _milestoneLevel) external {
-        require(
-            msg.sender == address(recyclingTracker) ||
-                roleManager.hasRole(roleManager.ADMIN_ROLE(), msg.sender),
-            "Not authorized"
-        );
+    function setBaseURI(string calldata _newBaseURI) external onlyAdmin {
+        baseTokenURI = _newBaseURI;
+        emit BaseURIChanged(_newBaseURI);
+    }
+
+    function setMilestoneThreshold(
+        uint256 level,
+        uint256 scanCount
+    ) external onlyAdmin {
+        require(level > 0 && level <= 3, "Invalid level");
+        require(scanCount > 0, "Invalid scan count");
+        milestoneThresholds[level] = scanCount;
+    }
+
+    /* -------------------------------------------------- */
+    /*  Minting                                           */
+    /* -------------------------------------------------- */
+    function mintMilestoneNFT(
+        address to,
+        uint256 _milestoneLevel
+    ) external onlyRecyclingTrackerOrAdmin {
         require(
             _milestoneLevel >= 1 && _milestoneLevel <= 3,
             "Invalid milestone level"
@@ -58,47 +92,20 @@ contract EcoNFT is ERC721URIStorage, AccessControl {
 
         uint256 tokenId = nextTokenId++;
         _mint(to, tokenId);
-        _setTokenURI(
-            tokenId,
-            string(
-                abi.encodePacked(
-                    "ipfs://Qm.../metadata/",
-                    uint2str(tokenId),
-                    ".json"
-                )
-            )
-        );
+        _setTokenURI(tokenId, _buildTokenURI(tokenId));
         milestoneLevel[tokenId] = _milestoneLevel;
+
         emit MilestoneNFTMinted(to, tokenId, _milestoneLevel);
     }
 
-    function setMilestoneThreshold(
-        uint256 level,
-        uint256 scanCount
-    ) external onlyRole(roleManager.ADMIN_ROLE()) {
-        require(level > 0, "Invalid level");
-        require(scanCount > 0, "Invalid scan count");
-        milestoneThresholds[level] = scanCount;
-    }
-
-    function tokenURI(
+    /* -------------------------------------------------- */
+    /*  Views / Helpers                                   */
+    /* -------------------------------------------------- */
+    function _buildTokenURI(
         uint256 tokenId
-    ) public view override returns (string memory) {
-        require(_exists(tokenId), "Token does not exist");
+    ) internal view returns (string memory) {
         return
-            string(
-                abi.encodePacked(
-                    "ipfs://Qm.../metadata/",
-                    uint2str(tokenId),
-                    ".json"
-                )
-            );
-    }
-
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view override(ERC721URIStorage, AccessControl) returns (bool) {
-        return super.supportsInterface(interfaceId);
+            string(abi.encodePacked(baseTokenURI, uint2str(tokenId), ".json"));
     }
 
     function uint2str(uint256 _i) internal pure returns (string memory) {
