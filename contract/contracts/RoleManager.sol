@@ -17,6 +17,7 @@ contract RoleManager is AccessControl {
 
     constructor() {
         _grantRole(ADMIN_ROLE, msg.sender);
+        _setRoleAdmin(ADMIN_ROLE, ADMIN_ROLE);
         hasAnyRole[msg.sender] = true;
     }
 
