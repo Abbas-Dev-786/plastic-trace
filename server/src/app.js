@@ -4,9 +4,9 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const { globalErrorHandler } = require("./controllers/error.controller");
 
-// const authRoutes = require("./routes/auth");
-// const qrRoutes = require("./routes/qr");
-// const analyticsRoutes = require("./routes/analytics");
+const authRoutes = require("./routes/auth.route");
+const qrRoutes = require("./routes/qr.route");
+const analyticsRoutes = require("./routes/analytics.route");
 
 const app = express();
 app.use(helmet());
