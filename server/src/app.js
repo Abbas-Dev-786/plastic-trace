@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const { globalErrorHandler } = require("./controllers/error.controller");
 
 // const authRoutes = require("./routes/auth");
 // const qrRoutes = require("./routes/qr");
@@ -20,5 +21,7 @@ app.use(morgan("dev"));
 app.use("/{*splat}", (req, res, next) => {
   next(new AppError("This route is not defined", 404));
 });
+
+app.use(globalErrorHandler);
 
 module.exports = app;
