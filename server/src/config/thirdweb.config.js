@@ -8,25 +8,51 @@ const client = createThirdwebClient({
   config: {},
 });
 
+const CHAIN_ID = 128123;
+
 const account = privateKeyToAccount({
   privateKey: process.env.PRIVATE_KEY,
   // Etherlink test-net
-  chain: defineChain(128123),
+  chain: defineChain(CHAIN_ID),
 });
 
 // ---------- Contract getters ----------
 const roleManager = () =>
-  getContract({ client, address: process.env.CONTRACT_ROLE_MANAGER });
+  getContract({
+    client,
+    address: process.env.CONTRACT_ROLE_MANAGER,
+    chain: defineChain(CHAIN_ID),
+  });
 const qrManager = () =>
-  getContract({ client, address: process.env.CONTRACT_QR_MANAGER });
+  getContract({
+    client,
+    address: process.env.CONTRACT_QR_MANAGER,
+    chain: defineChain(CHAIN_ID),
+  });
 const recyclingTracker = () =>
-  getContract({ client, address: process.env.CONTRACT_RECYCLING_TRACKER });
+  getContract({
+    client,
+    address: process.env.CONTRACT_RECYCLING_TRACKER,
+    chain: defineChain(CHAIN_ID),
+  });
 const rewardToken = () =>
-  getContract({ client, address: process.env.CONTRACT_REWARD_TOKEN });
+  getContract({
+    client,
+    address: process.env.CONTRACT_REWARD_TOKEN,
+    chain: defineChain(CHAIN_ID),
+  });
 const rewardDistributor = () =>
-  getContract({ client, address: process.env.CONTRACT_REWARD_DISTRIBUTOR });
+  getContract({
+    client,
+    address: process.env.CONTRACT_REWARD_DISTRIBUTOR,
+    chain: defineChain(CHAIN_ID),
+  });
 const ecoNFT = () =>
-  getContract({ client, address: process.env.CONTRACT_ECONFT });
+  getContract({
+    client,
+    address: process.env.CONTRACT_ECONFT,
+    chain: defineChain(CHAIN_ID),
+  });
 
 module.exports = {
   client,
@@ -36,4 +62,5 @@ module.exports = {
   rewardToken,
   rewardDistributor,
   ecoNFT,
+  account,
 };
