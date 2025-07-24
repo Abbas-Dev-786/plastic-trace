@@ -27,7 +27,7 @@ exports.assignQR = async (req, res) => {
 exports.uploadMetadata = async (req, res) => {
   try {
     const { qrId, metadata } = req.body;
-    const cid = await ipfsService.uploadMetadata(metadata);
+    const cid = await ipfsService.uploadJSON(metadata);
     const tx = await contractService.setQRMetadata(qrId, cid);
     await QRData.updateOne({ qrId }, { ipfsHash: cid });
     res.json({ success: true, cid, txHash: tx.receipt.transactionHash });

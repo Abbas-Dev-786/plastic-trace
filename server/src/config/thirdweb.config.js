@@ -1,13 +1,39 @@
-const { ThirdwebSDK } = require("@thirdweb-dev/sdk");
-const { ethers } = require("ethers");
+// v5 SDK: single SDK instance for **all** contracts
+const { createThirdwebClient, getContract } = require("thirdweb");
+const { privateKeyToAccount } = require("thirdweb/wallets");
+const { defineChain } = require("thirdweb/chains");
 
-const provider = new ethers.providers.JsonRpcProvider(
-  "https://node.testnet.etherlink.com"
-);
-const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-
-const sdk = new ThirdwebSDK(signer, {
-  secretKey: process.env.THIRDWEB_SECRET_KEY,
+const client = createThirdwebClient({
+  secretKey: process.env.THIRDWEB_SECRET_KEY, // or secretKey
+  config: {},
 });
 
-module.exports = sdk;
+const account = privateKeyToAccount({
+  privateKey: process.env.PRIVATE_KEY,
+  // Etherlink test-net
+  chain: defineChain(128123),
+});
+
+// ---------- Contract getters ----------
+const roleManager = () =>
+  getContract({ client, address: process.env.CONTRACT_ROLE_MANAGER });
+const qrManager = () =>
+  getContract({ client, address: process.env.CONTRACT_QR_MANAGER });
+const recyclingTracker = () =>
+  getContract({ client, address: process.env.CONTRACT_RECYCLING_TRACKER });
+const rewardToken = () =>
+  getContract({ client, address: process.env.CONTRACT_REWARD_TOKEN });
+const rewardDistributor = () =>
+  getContract({ client, address: process.env.CONTRACT_REWARD_DISTRIBUTOR });
+const ecoNFT = () =>
+  getContract({ client, address: process.env.CONTRACT_ECONFT });
+
+module.exports = {
+  client,
+  roleManager,
+  qrManager,
+  recyclingTracker,
+  rewardToken,
+  rewardDistributor,
+  ecoNFT,
+};

@@ -1,13 +1,14 @@
-const { ThirdwebStorage } = require("@thirdweb-dev/storage");
+// src/services/ipfsService.js
+const { upload } = require("thirdweb/storage");
 
-const storage = new ThirdwebStorage({
-  secretKey: process.env.THIRDWEB_SECRET_KEY,
-});
-
-// upload JSON or file, return IPFS CID
-module.exports = {
-  async uploadMetadata(json) {
-    const uri = await storage.upload(json);
-    return uri.replace("ipfs://", ""); // return pure CID
+// Create a single global storage client (optional)
+module.exports.storageClient = {
+  uploadJSON: async (json) => {
+    const uri = await upload({ client: globalClient }, json);
+    return uri.replace("ipfs://", ""); // return CID only
+  },
+  uploadFile: async (file) => {
+    const uri = await upload({ client: globalClient }, file);
+    return uri.replace("ipfs://", "");
   },
 };
