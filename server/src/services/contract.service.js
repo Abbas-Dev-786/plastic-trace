@@ -1,145 +1,152 @@
+const { keccak256, toHex } = require("thirdweb");
 const {
   prepareContractCall,
   sendTransaction,
   readContract,
 } = require("thirdweb");
-const { keccak256, toHex } = require("thirdweb");
-const {
-  roleManager,
-  qrManager,
-  recyclingTracker,
-  rewardToken,
-  rewardDistributor,
-  ecoNFT,
-  account, // ✅ signer object
-} = require("../config/thirdweb.config");
+const { client, getContractInstance } = require("../config/thirdweb.config");
+const { account } = require("../config/thirdweb.config");
 
+const contracts = {
+  roleManager: getContractInstance(
+    process.env.CONTRACT_ROLE_MANAGER,
+    "RoleManager"
+  ),
+  qrManager: getContractInstance(
+    process.env.CONTRACT_QR_MANAGER,
+    "QRCodeManager"
+  ),
+  recyclingTracker: getContractInstance(
+    process.env.CONTRACT_RECYCLING_TRACKER,
+    "RecyclingTracker"
+  ),
+  rewardToken: getContractInstance(
+    process.env.CONTRACT_REWARD_TOKEN,
+    "RewardToken"
+  ),
+  rewardDistributor: getContractInstance(
+    process.env.CONTRACT_REWARD_DISTRIBUTOR,
+    "RewardDistributor"
+  ),
+  ecoNFT: getContractInstance(process.env.CONTRACT_ECONFT, "EcoNFT"),
+};
 
-
-/* ---------- 1. ROLES ---------- */
-module.exports.registerRole = (role) =>
-  sendTransaction(
-    prepareContractCall({
-      contract: roleManager(),
+/* ---------- 1. Roles ---------- */
+const registerRole = (role) =>
+  sendTransaction({
+    transaction: prepareContractCall({
+      contract: contracts.roleManager,
       method: "function registerRole(bytes32 role)",
-      params: [keccak256(toHex(role))], // convert string → bytes32
+      params: [keccak256(toHex(role))],
     }),
-    { account } // signer
-  );
+    account,
+  });
 
 /* ---------- 2. QR ---------- */
-module.exports.generateQRCodes = (amount) =>
-  sendTransaction(
-    prepareContractCall({
-      contract: qrManager(),
+const generateQRCodes = (amount) =>
+  sendTransaction({
+    transaction: prepareContractCall({
+      contract: contracts.qrManager,
       method: "function generateQRCodes(uint256 amount)",
       params: [amount],
     }),
-    { account }
-  );
+    account,
+  });
 
-module.exports.assignQR = (qrId, manufacturer) =>
-  sendTransaction(
-    prepareContractCall({
-      contract: qrManager(),
+const assignQR = (qrId, manufacturer) =>
+  sendTransaction({
+    transaction: prepareContractCall({
+      contract: contracts.qrManager,
       method:
         "function assignQRToManufacturer(uint256 qrId, address manufacturer)",
       params: [qrId, manufacturer],
     }),
-    { account }
-  );
+    account,
+  });
 
-module.exports.setQRMetadata = (qrId, ipfsHash) =>
-  sendTransaction(
-    prepareContractCall({
-      contract: qrManager(),
+const setQRMetadata = (qrId, ipfsHash) =>
+  sendTransaction({
+    transaction: prepareContractCall({
+      contract: contracts.qrManager,
       method: "function setQRMetadata(uint256 qrId, string ipfsHash)",
       params: [qrId, ipfsHash],
     }),
-    { account }
-  );
+    account,
+  });
 
 /* ---------- 3. Recycling ---------- */
-module.exports.scanQR = () =>
-  sendTransaction(
-    prepareContractCall({
-      contract: recyclingTracker(),
+const scanQR = () =>
+  sendTransaction({
+    transaction: prepareContractCall({
+      contract: contracts.recyclingTracker,
       method: "function scanQR(uint256 qrId)",
       params: [qrId],
     }),
-    { account }
-  );
+    account,
+  });
 
-module.exports.verifyScan = () =>
-  sendTransaction(
-    prepareContractCall({
-      contract: recyclingTracker(),
+const verifyScan = () =>
+  sendTransaction({
+    transaction: prepareContractCall({
+      contract: contracts.recyclingTracker,
       method: "function verifyScan(uint256 qrId)",
       params: [qrId],
     }),
-    { account }
-  );
+    account,
+  });
 
-module.exports.markRecycled = () =>
-  sendTransaction(
-    prepareContractCall({
-      contract: recyclingTracker(),
+const markRecycled = () =>
+  sendTransaction({
+    transaction: prepareContractCall({
+      contract: contracts.recyclingTracker,
       method: "function markRecycled(uint256 qrId)",
       params: [qrId],
     }),
-    { account }
-  );
+    account,
+  });
 
-module.exports.distributeRewards = () =>
-  sendTransaction(
-    prepareContractCall({
-      contract: rewardDistributor(),
+const distributeRewards = () =>
+  sendTransaction({
+    transaction: prepareContractCall({
+      contract: contracts.rewardDistributor,
       method: "function distributeRewards(uint256 qrId)",
       params: [qrId],
     }),
-    { account }
-  );
+    account,
+  });
 
 /* ---------- 4. Reads ---------- */
-module.exports.getUserScans = (wallet) =>
+const getUserScans = (wallet) =>
   readContract({
-    contract: recyclingTracker(),
+    contract: contracts.recyclingTracker,
     method: "function getUserScans(address user) view returns (uint256)",
     params: [wallet],
   });
 
-/* ---------- 5. NFT ---------- */
-module.exports.mintMilestoneNFT = (level = 1) =>
-  sendTransaction(
-    prepareContractCall({
-      contract: ecoNFT(),
-      method: "function mintMilestoneNFT(address to, uint256 milestoneLevel)",
-      params: [account.address, level],
-    }),
-    { account }
-  );
-
-module.exports.getUserNFTCount = (wallet) =>
+const getUserNFTCount = (wallet) =>
   readContract({
-    contract: ecoNFT(),
+    contract: contracts.ecoNFT,
     method: "function balanceOf(address owner) view returns (uint256)",
     params: [wallet],
   });
 
-/* ---------- 6. Reward Token ---------- */
-module.exports.mintTokens = (to, weiAmount) =>
-  sendTransaction(
-    prepareContractCall({
-      contract: rewardToken(),
-      method: "function mint(address to, uint256 amount)",
-      params: [to, weiAmount],
-    }),
-    { account }
-  );
-
-module.exports.getTokenBalance = (wallet) =>
+const getTokenBalance = (wallet) =>
   readContract({
-    contract: rewardToken(),
+    contract: contracts.rewardToken,
     method: "function balanceOf(address account) view returns (uint256)",
     params: [wallet],
   });
+
+module.exports = {
+  registerRole,
+  generateQRCodes,
+  assignQR,
+  setQRMetadata,
+  scanQR,
+  verifyScan,
+  markRecycled,
+  distributeRewards,
+  getUserScans,
+  getUserNFTCount,
+  getTokenBalance,
+};

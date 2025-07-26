@@ -1,4 +1,4 @@
-const contractService = require("../services/contract.service");
+const cs = require("../services/contract.service");
 const User = require("../models/user.model");
 const QRData = require("../models/qr.model");
 
@@ -19,8 +19,13 @@ exports.userProfile = async (req, res) => {
   try {
     const wallet = req.params.wallet.toLowerCase();
     const user = await User.findOne({ walletAddress: wallet });
-    const scans = await contractService.getUserScans(wallet);
-    res.json({ user, onChainScans: scans.toString() });
+    const scans = await cs.getUserScans(wallet);
+    const nfts = await cs.getUserNFTCount(wallet);
+    res.json({
+      user,
+      onChainScans: scans.toString(),
+      nftBalance: nfts.toString(),
+    });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -29,8 +34,7 @@ exports.userProfile = async (req, res) => {
 // QR lifecycle
 exports.qrLifecycle = async (req, res) => {
   try {
-    const qrId = Number(req.params.qrId);
-    const data = await QRData.findOne({ qrId });
+    const data = await QRData.findOne({ qrId: Number(req.params.qrId) });
     res.json(data);
   } catch (err) {
     res.status(400).json({ error: err.message });
