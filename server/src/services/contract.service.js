@@ -1,11 +1,10 @@
 const { keccak256, toHex } = require("thirdweb");
+const { prepareContractCall, sendTransaction } = require("thirdweb");
 const {
-  prepareContractCall,
-  sendTransaction,
-  readContract,
-} = require("thirdweb");
-const { client, getContractInstance } = require("../config/thirdweb.config");
-const { account } = require("../config/thirdweb.config");
+  account,
+  getContractInstance,
+  etherlinkTestnet,
+} = require("../config/thirdweb.config");
 
 const contracts = {
   roleManager: getContractInstance(
@@ -31,111 +30,171 @@ const contracts = {
   ecoNFT: getContractInstance(process.env.CONTRACT_ECONFT, "EcoNFT"),
 };
 
-/* ---------- 1. Roles ---------- */
-const registerRole = (role) =>
-  sendTransaction({
-    transaction: prepareContractCall({
-      contract: contracts.roleManager,
-      method: "function registerRole(bytes32 role)",
-      params: [keccak256(toHex(role))],
-    }),
-    account,
-  });
-
-/* ---------- 2. QR ---------- */
-const generateQRCodes = (amount) =>
-  sendTransaction({
-    transaction: prepareContractCall({
+/* Admin Actions (Server-Side Signing) */
+const generateQRCodes = async (amount) => {
+  if (!Number.isInteger(Number(amount)) || amount <= 0 || amount > 1000) {
+    throw new Error("Amount must be an integer between 1 and 1000");
+  }
+  try {
+    const transaction = await prepareContractCall({
       contract: contracts.qrManager,
       method: "function generateQRCodes(uint256 amount)",
-      params: [amount],
-    }),
-    account,
-  });
+      params: [BigInt(amount)],
+    });
+    const tx = await sendTransaction({
+      transaction,
+      account,
+      chain: etherlinkTestnet,
+    });
+    const events = await contracts.qrManager.getEvents("QRCodesGenerated");
+    const qrIds =
+      events.length > 0 ? events[0].args.qrIds.map((id) => id.toString()) : [];
+    return { tx, qrIds };
+  } catch (error) {
+    console.error("Error in generateQRCodes:", {
+      message: error.message,
+      stack: error.stack,
+      amount,
+      contractAddress: process.env.CONTRACT_QR_MANAGER,
+    });
+    throw error;
+  }
+};
 
-const assignQR = (qrId, manufacturer) =>
-  sendTransaction({
-    transaction: prepareContractCall({
+const assignQR = async (qrId, manufacturer) => {
+  if (!Number.isInteger(Number(qrId)) || qrId <= 0)
+    throw new Error("Invalid QR ID");
+  if (!manufacturer.match(/^0x[a-fA-F0-9]{40}$/))
+    throw new Error("Invalid manufacturer address");
+  try {
+    const transaction = await prepareContractCall({
       contract: contracts.qrManager,
       method:
         "function assignQRToManufacturer(uint256 qrId, address manufacturer)",
-      params: [qrId, manufacturer],
-    }),
-    account,
-  });
+      params: [BigInt(qrId), manufacturer],
+    });
+    const tx = await sendTransaction({
+      transaction,
+      account,
+      chain: etherlinkTestnet,
+    });
+    return tx;
+  } catch (error) {
+    console.error("Error in assignQR:", {
+      message: error.message,
+      stack: error.stack,
+      qrId,
+      manufacturer,
+    });
+    throw error;
+  }
+};
 
-const setQRMetadata = (qrId, ipfsHash) =>
-  sendTransaction({
-    transaction: prepareContractCall({
+const setQRMetadata = async (qrId, ipfsHash) => {
+  if (!Number.isInteger(Number(qrId)) || qrId <= 0)
+    throw new Error("Invalid QR ID");
+  if (!ipfsHash) throw new Error("IPFS hash is required");
+  try {
+    const transaction = await prepareContractCall({
       contract: contracts.qrManager,
       method: "function setQRMetadata(uint256 qrId, string ipfsHash)",
-      params: [qrId, ipfsHash],
-    }),
-    account,
-  });
+      params: [BigInt(qrId), ipfsHash],
+    });
+    const tx = await sendTransaction({
+      transaction,
+      account,
+      chain: etherlinkTestnet,
+    });
+    return tx;
+  } catch (error) {
+    console.error("Error in setQRMetadata:", {
+      message: error.message,
+      stack: error.stack,
+      qrId,
+      ipfsHash,
+    });
+    throw error;
+  }
+};
 
-/* ---------- 3. Recycling ---------- */
-const scanQR = () =>
-  sendTransaction({
-    transaction: prepareContractCall({
-      contract: contracts.recyclingTracker,
-      method: "function scanQR(uint256 qrId)",
-      params: [qrId],
-    }),
-    account,
+/* User Actions (Return Transaction Objects for Frontend Signing) */
+const registerRole = async (role) => {
+  if (
+    ![
+      "ADMIN_ROLE",
+      "MANUFACTURER_ROLE",
+      "RECYCLER_ROLE",
+      "RAGPICKER_ROLE",
+      "CITIZEN_ROLE",
+    ].includes(role)
+  ) {
+    throw new Error("Invalid role");
+  }
+  return await prepareContractCall({
+    contract: contracts.roleManager,
+    method: "function registerRole(bytes32 role)",
+    params: [keccak256(toHex(role))],
   });
+};
 
-const verifyScan = () =>
-  sendTransaction({
-    transaction: prepareContractCall({
-      contract: contracts.recyclingTracker,
-      method: "function verifyScan(uint256 qrId)",
-      params: [qrId],
-    }),
-    account,
-  });
-
-const markRecycled = () =>
-  sendTransaction({
-    transaction: prepareContractCall({
-      contract: contracts.recyclingTracker,
-      method: "function markRecycled(uint256 qrId)",
-      params: [qrId],
-    }),
-    account,
-  });
-
-const distributeRewards = () =>
-  sendTransaction({
-    transaction: prepareContractCall({
-      contract: contracts.rewardDistributor,
-      method: "function distributeRewards(uint256 qrId)",
-      params: [qrId],
-    }),
-    account,
-  });
-
-/* ---------- 4. Reads ---------- */
-const getUserScans = (wallet) =>
-  readContract({
+const scanQR = async (qrId) => {
+  if (!Number.isInteger(Number(qrId)) || qrId <= 0)
+    throw new Error("Invalid QR ID");
+  return await prepareContractCall({
     contract: contracts.recyclingTracker,
-    method: "function getUserScans(address user) view returns (uint256)",
-    params: [wallet],
+    method: "function scanQR(uint256 qrId)",
+    params: [BigInt(qrId)],
   });
+};
 
-const getUserNFTCount = (wallet) =>
-  readContract({
-    contract: contracts.ecoNFT,
-    method: "function balanceOf(address owner) view returns (uint256)",
-    params: [wallet],
+const verifyScan = async (qrId) => {
+  if (!Number.isInteger(Number(qrId)) || qrId <= 0)
+    throw new Error("Invalid QR ID");
+  return await prepareContractCall({
+    contract: contracts.recyclingTracker,
+    method: "function verifyScan(uint256 qrId)",
+    params: [BigInt(qrId)],
   });
+};
 
-const getTokenBalance = (wallet) =>
-  readContract({
-    contract: contracts.rewardToken,
-    method: "function balanceOf(address account) view returns (uint256)",
-    params: [wallet],
+const markRecycled = async (qrId) => {
+  if (!Number.isInteger(Number(qrId)) || qrId <= 0)
+    throw new Error("Invalid QR ID");
+  return await prepareContractCall({
+    contract: contracts.recyclingTracker,
+    method: "function markRecycled(uint256 qrId)",
+    params: [BigInt(qrId)],
   });
+};
+
+const distributeRewards = async (qrId) => {
+  if (!Number.isInteger(Number(qrId)) || qrId <= 0)
+    throw new Error("Invalid QR ID");
+  return await prepareContractCall({
+    contract: contracts.rewardDistributor,
+    method: "function distributeRewards(uint256 qrId)",
+    params: [BigInt(qrId)],
+  });
+};
+
+/* Read Functions */
+const getUserScans = async (wallet) => {
+  if (!wallet.match(/^0x[a-fA-F0-9]{40}$/))
+    throw new Error("Invalid wallet address");
+  return await contracts.recyclingTracker.call("getUserScans", [wallet]);
+};
+
+const getUserNFTCount = async (wallet) => {
+  if (!wallet.match(/^0x[a-fA-F0-9]{40}$/))
+    throw new Error("Invalid wallet address");
+  return await contracts.ecoNFT.call("balanceOf", [wallet]);
+};
+
+const getTokenBalance = async (wallet) => {
+  if (!wallet.match(/^0x[a-fA-F0-9]{40}$/))
+    throw new Error("Invalid wallet address");
+  return await contracts.rewardToken.call("balanceOf", [wallet]);
+};
 
 module.exports = {
   registerRole,

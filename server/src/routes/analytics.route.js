@@ -1,10 +1,9 @@
 const express = require("express");
-const analytics = require("../controllers/analytics.controller");
-
 const router = express.Router();
+const analyticsController = require("../controllers/analytics.controller");
 
-router.get("/leaderboard", analytics.leaderboard);
-router.get("/user/:wallet", analytics.userProfile);
-router.get("/qr/:qrId", analytics.qrLifecycle);
+router.get("/leaderboard", analyticsController.getLeaderboard);
+router.get("/user/:wallet", analyticsController.getUserProfile);
+router.get("/qr/:qrId", analyticsController.getQRLifecycle);
 
 module.exports = router;

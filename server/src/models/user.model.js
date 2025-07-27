@@ -10,7 +10,13 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["ADMIN", "MANUFACTURER", "RECYCLER", "RAGPICKER", "CITIZEN"],
+      enum: [
+        "ADMIN_ROLE",
+        "MANUFACTURER_ROLE",
+        "RECYCLER_ROLE",
+        "RAGPICKER_ROLE",
+        "CITIZEN_ROLE",
+      ],
       required: true,
     },
     scans: { type: Number, default: 0 },

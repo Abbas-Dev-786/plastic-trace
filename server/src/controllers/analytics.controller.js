@@ -1,42 +1,59 @@
-const cs = require("../services/contract.service");
+const contractService = require("../services/contract.service");
 const User = require("../models/user.model");
 const QRData = require("../models/qr.model");
 
-// Leaderboard
-exports.leaderboard = async (req, res) => {
+exports.getLeaderboard = async (req, res) => {
   try {
-    const topScanners = await User.find({ role: "RAGPICKER" })
-      .sort({ scans: -1 })
-      .limit(10);
-    res.json(topScanners);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    const users = await User.find().sort({ scans: -1 }).limit(10);
+    res.json(
+      users.map((user) => ({
+        walletAddress: user.walletAddress,
+        scans: user.scans,
+      }))
+    );
+  } catch (error) {
+    console.error("Error in getLeaderboard:", {
+      message: error.message,
+      stack: error.stack,
+    });
+    res.status(400).json({ error: error.message });
   }
 };
 
-// Profile
-exports.userProfile = async (req, res) => {
+exports.getUserProfile = async (req, res) => {
   try {
-    const wallet = req.params.wallet.toLowerCase();
+    const { wallet } = req.params;
     const user = await User.findOne({ walletAddress: wallet });
-    const scans = await cs.getUserScans(wallet);
-    const nfts = await cs.getUserNFTCount(wallet);
+    const onChainScans = await contractService.getUserScans(wallet);
+    const nftBalance = await contractService.getUserNFTCount(wallet);
+    const tokenBalance = await contractService.getTokenBalance(wallet);
     res.json({
       user,
-      onChainScans: scans.toString(),
-      nftBalance: nfts.toString(),
+      onChainScans: onChainScans.toString(),
+      nftBalance: nftBalance.toString(),
+      tokenBalance: ethers.utils.formatEther(tokenBalance),
     });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+  } catch (error) {
+    console.error("Error in getUserProfile:", {
+      message: error.message,
+      stack: error.stack,
+      params: req.params,
+    });
+    res.status(400).json({ error: error.message });
   }
 };
 
-// QR lifecycle
-exports.qrLifecycle = async (req, res) => {
+exports.getQRLifecycle = async (req, res) => {
   try {
-    const data = await QRData.findOne({ qrId: Number(req.params.qrId) });
-    res.json(data);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    const { qrId } = req.params;
+    const qrData = await QRData.findOne({ qrId });
+    res.json(qrData || { qrId, status: "Not found" });
+  } catch (error) {
+    console.error("Error in getQRLifecycle:", {
+      message: error.message,
+      stack: error.stack,
+      params: req.params,
+    });
+    res.status(400).json({ error: error.message });
   }
 };

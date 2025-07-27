@@ -1,17 +1,13 @@
 const express = require("express");
-const qr = require("../controllers/qr.controller");
-
 const router = express.Router();
+const qrController = require("../controllers/qr.controller");
 
-// Admin flows
-router.post("/generate", qr.generateQRCodes);
-router.post("/assign", qr.assignQR);
-router.post("/metadata", qr.uploadMetadata);
-
-// Recycling flows
-router.post("/scan", qr.scanQR);
-router.post("/verify", qr.verifyScan);
-router.post("/recycle", qr.markRecycled);
-router.post("/distribute", qr.distributeRewards);
+router.post("/generate", qrController.generateQRCodes);
+router.post("/assign", qrController.assignQR);
+router.post("/metadata", qrController.uploadMetadata);
+router.post("/scan", qrController.scanQR);
+router.post("/verify", qrController.verifyScan);
+router.post("/recycle", qrController.markRecycled);
+router.post("/distribute", qrController.distributeRewards);
 
 module.exports = router;
