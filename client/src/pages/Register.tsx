@@ -25,6 +25,9 @@ import { Leaf, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { WalletConnectButton } from "@/components/WalletConnectButton";
+import { useActiveAccount } from "thirdweb/react";
+import { useMutation } from "@tanstack/react-query";
+import { register } from "@/services/api.service";
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -37,8 +40,19 @@ const registerSchema = z.object({
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 const Register = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const activeAccount = useActiveAccount();
+
   const { toast } = useToast();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: register,
+    onSuccess() {
+      alert("Registration successful!");
+    },
+    onError() {
+      alert("Registration failed. Please try again.");
+    },
+  });
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -49,22 +63,7 @@ const Register = () => {
     },
   });
 
-  const onSubmit = async (data: RegisterFormData) => {
-    setIsLoading(true);
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    console.log("Registration data:", data);
-
-    toast({
-      title: "Registration Successful!",
-      description:
-        "Welcome to PlasticTrace. You can now start tracking plastic waste.",
-    });
-
-    setIsLoading(false);
-  };
+  const onSubmit = async (data: RegisterFormData) => {};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary via-primary-glow to-accent">
@@ -171,13 +170,13 @@ const Register = () => {
                             >
                               <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                                 <RadioGroupItem
-                                  value="individual"
-                                  id="individual"
+                                  value="MANUFACTURER_ROLE"
+                                  id="MANUFACTURER_ROLE"
                                   className="border-white/40 text-white"
                                 />
                                 <div className="flex-1">
                                   <Label
-                                    htmlFor="Manufacturer"
+                                    htmlFor="MANUFACTURER_ROLE"
                                     className="text-white font-medium cursor-pointer"
                                   >
                                     Manufacturer
@@ -192,13 +191,13 @@ const Register = () => {
 
                               <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                                 <RadioGroupItem
-                                  value="RagPicker"
-                                  id="RagPicker"
+                                  value="RAGPICKER_ROLE"
+                                  id="RAGPICKER_ROLE"
                                   className="border-white/40 text-white"
                                 />
                                 <div className="flex-1">
                                   <Label
-                                    htmlFor="RagPicker"
+                                    htmlFor="RAGPICKER_ROLE"
                                     className="text-white font-medium cursor-pointer"
                                   >
                                     RagPicker
@@ -212,19 +211,38 @@ const Register = () => {
 
                               <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                                 <RadioGroupItem
-                                  value="Recycler"
-                                  id="Recycler"
+                                  value="RECYCLER_ROLE"
+                                  id="RECYCLER_ROLE"
                                   className="border-white/40 text-white"
                                 />
                                 <div className="flex-1">
                                   <Label
-                                    htmlFor="Recycler"
+                                    htmlFor="RECYCLER_ROLE"
                                     className="text-white font-medium cursor-pointer"
                                   >
                                     Recycler
                                   </Label>
                                   <p className="text-xs text-white/60 mt-1">
                                     Verify and process collected waste materials
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                                <RadioGroupItem
+                                  value="CITIZEN_ROLE"
+                                  id="CITIZEN_ROLE"
+                                  className="border-white/40 text-white"
+                                />
+                                <div className="flex-1">
+                                  <Label
+                                    htmlFor="CITIZEN_ROLE"
+                                    className="text-white font-medium cursor-pointer"
+                                  >
+                                    Citizen
+                                  </Label>
+                                  <p className="text-xs text-white/60 mt-1">
+                                    View Leaderboard
                                   </p>
                                 </div>
                               </div>
@@ -236,13 +254,20 @@ const Register = () => {
                     />
 
                     {/* Submit Button */}
-                    <Button
-                      type="submit"
-                      disabled={isLoading}
-                      className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/20 font-medium"
-                    >
-                      {isLoading ? "Creating Account..." : "Create Account"}
-                    </Button>
+                    <div>
+                      {!activeAccount?.address && (
+                        <p className="text-sm text-center text-red-600 mb-1">
+                          Please connect your wallet
+                        </p>
+                      )}
+                      <Button
+                        type="submit"
+                        disabled={activeAccount?.address ? isPending : true}
+                        className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/20 font-medium"
+                      >
+                        {isPending ? "Creating Account..." : "Create Account"}
+                      </Button>
+                    </div>
                   </form>
                 </Form>
 
