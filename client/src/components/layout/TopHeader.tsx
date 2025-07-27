@@ -3,12 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { WalletConnectButton } from "@/components/WalletConnectButton";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useTheme } from "next-themes";
 
 export function TopHeader() {
@@ -20,10 +14,7 @@ export function TopHeader() {
         <SidebarTrigger />
         <div className="relative max-w-xs sm:max-w-md hidden sm:block">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search... (Ctrl+K)"
-            className="pl-10 w-full"
-          />
+          <Input placeholder="Search... (Ctrl+K)" className="pl-10 w-full" />
         </div>
       </div>
 
@@ -48,7 +39,7 @@ export function TopHeader() {
 
         <WalletConnectButton />
 
-        <DropdownMenu>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
               <User className="w-5 h-5" />
@@ -59,7 +50,7 @@ export function TopHeader() {
             <DropdownMenuItem>Settings</DropdownMenuItem>
             <DropdownMenuItem>Sign out</DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
       </div>
     </header>
   );

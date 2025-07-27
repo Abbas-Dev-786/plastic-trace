@@ -1,5 +1,20 @@
-import { Recycle, Users, QrCode, Leaf, TrendingUp, Plus, Download, Eye } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Recycle,
+  Users,
+  QrCode,
+  Leaf,
+  TrendingUp,
+  Plus,
+  Download,
+  Eye,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -17,7 +32,7 @@ const kpiData = [
     title: "Items Recycled",
     value: "8,749",
     change: "+8.2%",
-    trend: "up", 
+    trend: "up",
     icon: Recycle,
     color: "text-success",
   },
@@ -75,9 +90,24 @@ const recentActivity = [
 ];
 
 const milestones = [
-  { title: "Daily Recycling Target", current: 847, target: 1000, color: "bg-primary" },
-  { title: "Monthly User Growth", current: 1523, target: 2000, color: "bg-accent" },
-  { title: "CO₂ Reduction Goal", current: 245, target: 300, color: "bg-success" },
+  {
+    title: "Daily Recycling Target",
+    current: 847,
+    target: 1000,
+    color: "bg-primary",
+  },
+  {
+    title: "Monthly User Growth",
+    current: 1523,
+    target: 2000,
+    color: "bg-accent",
+  },
+  {
+    title: "CO₂ Reduction Goal",
+    current: 245,
+    target: 300,
+    color: "bg-success",
+  },
 ];
 
 export default function AdminDashboard() {
@@ -86,15 +116,19 @@ export default function AdminDashboard() {
       {/* Page Header */}
       <div className="flex flex-col gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Admin Dashboard</h1>
-          <p className="text-sm sm:text-base text-muted-foreground">Monitor and manage the plastic waste tracking system</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
+            Admin Dashboard
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Monitor and manage the plastic waste tracking system
+          </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
           <Button variant="outline" size="sm" className="w-full sm:w-auto">
             <Download className="w-4 h-4 mr-2" />
             Export Report
           </Button>
-          <Button size="sm" className="rounded-button w-full sm:w-auto">
+          <Button size="sm" variant="outline" className="w-full sm:w-auto">
             <Plus className="w-4 h-4 mr-2" />
             Generate QRs
           </Button>
@@ -129,7 +163,9 @@ export default function AdminDashboard() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Recycling Activity</CardTitle>
-            <CardDescription>Daily plastic waste collection over the last 30 days</CardDescription>
+            <CardDescription>
+              Daily plastic waste collection over the last 30 days
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-60 sm:h-80 bg-muted/20 rounded-lg flex items-center justify-center">
@@ -157,8 +193,8 @@ export default function AdminDashboard() {
                     {milestone.current}/{milestone.target}
                   </span>
                 </div>
-                <Progress 
-                  value={(milestone.current / milestone.target) * 100} 
+                <Progress
+                  value={(milestone.current / milestone.target) * 100}
                   className="h-2"
                 />
               </div>
@@ -172,7 +208,9 @@ export default function AdminDashboard() {
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest system events and user actions</CardDescription>
+            <CardDescription>
+              Latest system events and user actions
+            </CardDescription>
           </div>
           <Button variant="outline" size="sm">
             <Eye className="w-4 h-4 mr-2" />
@@ -182,22 +220,31 @@ export default function AdminDashboard() {
         <CardContent>
           <div className="space-y-4">
             {recentActivity.map((activity) => (
-              <div key={activity.id} className="flex items-center justify-between p-4 border rounded-lg">
+              <div
+                key={activity.id}
+                className="flex items-center justify-between p-4 border rounded-lg"
+              >
                 <div className="flex items-center gap-4">
                   <div className="w-2 h-2 bg-accent rounded-full" />
                   <div>
                     <p className="font-medium">{activity.user}</p>
-                    <p className="text-sm text-muted-foreground">{activity.item}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {activity.item}
+                    </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <Badge 
-                    variant={activity.status === "completed" ? "default" : "secondary"}
+                  <Badge
+                    variant={
+                      activity.status === "completed" ? "default" : "secondary"
+                    }
                     className="mb-1"
                   >
                     {activity.status}
                   </Badge>
-                  <p className="text-sm text-muted-foreground">{activity.time}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {activity.time}
+                  </p>
                 </div>
               </div>
             ))}

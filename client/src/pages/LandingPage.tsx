@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { WalletConnectButton } from "@/components/WalletConnectButton";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-ocean-cleanup.jpg";
 
 type UserRole =
@@ -127,6 +127,12 @@ export default function LandingPage() {
               >
                 FAQ
               </a>
+              <NavLink
+                to="/register"
+                className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+              >
+                Register
+              </NavLink>
             </nav>
 
             {/* Mobile Menu Button & Wallet */}
