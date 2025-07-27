@@ -1,12 +1,27 @@
 import { useState } from "react";
-import { ArrowRight, Leaf, Shield, Coins, Globe, Users, Recycle, Play, Info } from "lucide-react";
+import {
+  ArrowRight,
+  Leaf,
+  Shield,
+  Coins,
+  Globe,
+  Users,
+  Recycle,
+  Play,
+  Info,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { WalletConnectButton } from "@/components/WalletConnectButton";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-ocean-cleanup.jpg";
 
-type UserRole = "admin" | "manufacturer" | "rag-picker" | "recycler" | "citizen";
+type UserRole =
+  | "admin"
+  | "manufacturer"
+  | "rag-picker"
+  | "recycler"
+  | "citizen";
 
 const roles = [
   {
@@ -16,14 +31,14 @@ const roles = [
     icon: Shield,
   },
   {
-    title: "Manufacturer", 
+    title: "Manufacturer",
     value: "manufacturer",
     description: "Track products from creation to disposal lifecycle",
     icon: Globe,
   },
   {
     title: "Rag Picker",
-    value: "rag-picker", 
+    value: "rag-picker",
     description: "Scan waste items and earn instant blockchain rewards",
     icon: Users,
   },
@@ -58,9 +73,12 @@ export default function LandingPage() {
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(56,189,248,0.1),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(34,197,94,0.1),transparent_50%)]" />
-        <div className="absolute top-0 left-0 w-full h-full opacity-20" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }} />
+        <div
+          className="absolute top-0 left-0 w-full h-full opacity-20"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}
+        />
       </div>
 
       {/* Glass Header */}
@@ -73,36 +91,73 @@ export default function LandingPage() {
                 <Leaf className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-lg sm:text-xl font-bold text-white">PlasticTrace</h1>
+                <h1 className="text-lg sm:text-xl font-bold text-white">
+                  PlasticTrace
+                </h1>
                 <p className="text-xs text-white/60">Sustainable Future</p>
               </div>
-              <h1 className="sm:hidden text-lg font-bold text-white">PlasticTrace</h1>
+              <h1 className="sm:hidden text-lg font-bold text-white">
+                PlasticTrace
+              </h1>
             </div>
 
             {/* Navigation Links - Desktop */}
             <nav className="hidden lg:flex items-center gap-8">
-              <a href="#features" className="text-white/80 hover:text-white transition-colors text-sm font-medium">Features</a>
-              <a href="#how-it-works" className="text-white/80 hover:text-white transition-colors text-sm font-medium">How It Works</a>
-              <a href="#impact" className="text-white/80 hover:text-white transition-colors text-sm font-medium">Impact</a>
-              <a href="#faq" className="text-white/80 hover:text-white transition-colors text-sm font-medium">FAQ</a>
+              <a
+                href="#features"
+                className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+              >
+                Features
+              </a>
+              <a
+                href="#how-it-works"
+                className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+              >
+                How It Works
+              </a>
+              <a
+                href="#impact"
+                className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+              >
+                Impact
+              </a>
+              <a
+                href="#faq"
+                className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+              >
+                FAQ
+              </a>
             </nav>
 
             {/* Mobile Menu Button & Wallet */}
             <div className="flex items-center gap-2 sm:gap-4">
               {/* Mobile Menu Button */}
               <button className="lg:hidden p-2 text-white/80 hover:text-white transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               </button>
-              
+
               <div className="hidden sm:block">
                 <WalletConnectButton />
               </div>
-              
+
               {/* Compact wallet button for mobile */}
               <div className="sm:hidden">
-                <Button size="sm" className="bg-white/20 hover:bg-white/30 text-white border-white/20 text-xs px-3 py-1">
+                <Button
+                  size="sm"
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/20 text-xs px-3 py-1"
+                >
                   Connect
                 </Button>
               </div>
@@ -119,75 +174,77 @@ export default function LandingPage() {
               <div className="space-y-6">
                 <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-sm text-white/80">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  Now Live on Blockchain
+                  Now Live on Etherlink Testnet
                 </div>
-                
+
                 <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight tracking-tight">
                   Transform
                   <span className="block bg-gradient-to-r from-blue-300 via-green-300 to-blue-300 bg-clip-text text-transparent">
                     Waste to Wealth
                   </span>
                 </h2>
-                
+
                 <p className="text-xl sm:text-2xl text-white/70 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-light">
-                  Revolutionary blockchain ecosystem that rewards sustainable actions. Scan, track, earn — every piece of plastic becomes a step toward environmental restoration.
+                  Revolutionary blockchain ecosystem that rewards sustainable
+                  actions. Scan, track, earn — every piece of plastic becomes a
+                  step toward environmental restoration.
                 </p>
               </div>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="group bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 text-white border-0 h-14 px-8 text-lg font-semibold rounded-2xl transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/25"
                   onClick={() => setShowRoleSelection(true)}
                 >
                   <Play className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" />
                   Start Your Journey
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="lg"
-                  className="group border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 backdrop-blur-md h-14 px-8 text-lg rounded-2xl transition-all duration-300"
-                >
-                  <Info className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
-                  Discover Impact
-                </Button>
               </div>
-              
+
               {/* Enhanced Stats */}
               <div className="grid grid-cols-3 gap-8 pt-8">
                 <div className="text-center group">
-                  <div className="text-3xl sm:text-4xl font-bold text-white group-hover:scale-110 transition-transform">2.5M+</div>
-                  <div className="text-sm text-white/60 mt-1">Items Recycled</div>
+                  <div className="text-3xl sm:text-4xl font-bold text-white group-hover:scale-110 transition-transform">
+                    2.5M+
+                  </div>
+                  <div className="text-sm text-white/60 mt-1">
+                    Items Recycled
+                  </div>
                   <div className="w-8 h-0.5 bg-gradient-to-r from-blue-400 to-transparent mx-auto mt-2" />
                 </div>
                 <div className="text-center group">
-                  <div className="text-3xl sm:text-4xl font-bold text-white group-hover:scale-110 transition-transform">15K+</div>
+                  <div className="text-3xl sm:text-4xl font-bold text-white group-hover:scale-110 transition-transform">
+                    15K+
+                  </div>
                   <div className="text-sm text-white/60 mt-1">Active Users</div>
                   <div className="w-8 h-0.5 bg-gradient-to-r from-green-400 to-transparent mx-auto mt-2" />
                 </div>
                 <div className="text-center group">
-                  <div className="text-3xl sm:text-4xl font-bold text-white group-hover:scale-110 transition-transform">850T</div>
+                  <div className="text-3xl sm:text-4xl font-bold text-white group-hover:scale-110 transition-transform">
+                    850T
+                  </div>
                   <div className="text-sm text-white/60 mt-1">CO₂ Saved</div>
                   <div className="w-8 h-0.5 bg-gradient-to-r from-blue-400 to-transparent mx-auto mt-2" />
                 </div>
               </div>
             </div>
-            
+
             {/* Enhanced Hero Image */}
             <div className="relative mt-8 lg:mt-0">
               <div className="relative">
                 {/* Floating elements */}
                 <div className="absolute -top-4 -left-4 w-20 h-20 bg-gradient-to-br from-blue-400/20 to-green-400/20 rounded-full backdrop-blur-sm animate-float" />
                 <div className="absolute -bottom-6 -right-6 w-16 h-16 bg-gradient-to-br from-green-400/20 to-blue-400/20 rounded-full backdrop-blur-sm animate-float-delayed" />
-                
+
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-white/20">
-                  <img 
-                    src={heroImage} 
-                    alt="Ocean cleanup efforts" 
+                  <img
+                    src={heroImage}
+                    alt="Ocean cleanup efforts"
                     className="w-full h-80 lg:h-96 object-cover transform hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  
+
                   {/* Overlay card */}
                   <div className="absolute bottom-6 left-6 right-6">
                     <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4">
@@ -198,7 +255,9 @@ export default function LandingPage() {
                           </div>
                           <div>
                             <div className="font-semibold">Live Impact</div>
-                            <div className="text-sm text-white/70">Real-time tracking</div>
+                            <div className="text-sm text-white/70">
+                              Real-time tracking
+                            </div>
                           </div>
                         </div>
                         <div className="text-right">
@@ -231,7 +290,8 @@ export default function LandingPage() {
               </span>
             </h3>
             <p className="text-xl text-white/70 max-w-3xl mx-auto leading-relaxed">
-              Experience the future of recycling with our cutting-edge features designed to reward sustainable actions.
+              Experience the future of recycling with our cutting-edge features
+              designed to reward sustainable actions.
             </p>
           </div>
 
@@ -240,51 +300,66 @@ export default function LandingPage() {
               {
                 icon: Recycle,
                 title: "Smart QR Tracking",
-                description: "Every plastic item gets a unique QR code for complete lifecycle tracking from production to recycling.",
-                gradient: "from-blue-500 to-cyan-500"
+                description:
+                  "Every plastic item gets a unique QR code for complete lifecycle tracking from production to recycling.",
+                gradient: "from-blue-500 to-cyan-500",
               },
               {
                 icon: Coins,
                 title: "Instant Crypto Rewards",
-                description: "Earn tokens immediately when you scan and recycle items. Your environmental impact has real value.",
-                gradient: "from-green-500 to-emerald-500"
+                description:
+                  "Earn tokens immediately when you scan and recycle items. Your environmental impact has real value.",
+                gradient: "from-green-500 to-emerald-500",
               },
               {
                 icon: Shield,
                 title: "Transparent Verification",
-                description: "Blockchain ensures every transaction is verified, transparent, and immutable for complete trust.",
-                gradient: "from-purple-500 to-pink-500"
+                description:
+                  "Blockchain ensures every transaction is verified, transparent, and immutable for complete trust.",
+                gradient: "from-purple-500 to-pink-500",
               },
               {
                 icon: Globe,
                 title: "Global Impact Network",
-                description: "Join a worldwide community of eco-warriors making measurable environmental change together.",
-                gradient: "from-orange-500 to-red-500"
+                description:
+                  "Join a worldwide community of eco-warriors making measurable environmental change together.",
+                gradient: "from-orange-500 to-red-500",
               },
               {
                 icon: Users,
                 title: "Community Rewards",
-                description: "Participate in challenges, competitions, and collaborative goals with increasing rewards.",
-                gradient: "from-indigo-500 to-blue-500"
+                description:
+                  "Participate in challenges, competitions, and collaborative goals with increasing rewards.",
+                gradient: "from-indigo-500 to-blue-500",
               },
               {
                 icon: Leaf,
                 title: "Carbon Credit System",
-                description: "Convert your recycling actions into verified carbon credits that can be traded or held.",
-                gradient: "from-teal-500 to-green-500"
-              }
+                description:
+                  "Convert your recycling actions into verified carbon credits that can be traded or held.",
+                gradient: "from-teal-500 to-green-500",
+              },
             ].map((feature, index) => (
-              <Card key={feature.title} className="group relative bg-white/5 backdrop-blur-md border border-white/20 hover:border-white/40 transition-all duration-500 p-8 overflow-hidden">
+              <Card
+                key={feature.title}
+                className="group relative bg-white/5 backdrop-blur-md border border-white/20 hover:border-white/40 transition-all duration-500 p-8 overflow-hidden"
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                
+
                 <CardContent className="relative p-0 space-y-6">
-                  <div className={`w-16 h-16 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-lg`}>
+                  <div
+                    className={`w-16 h-16 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-lg`}
+                  >
                     <feature.icon className="w-8 h-8 text-white" />
                   </div>
-                  
+
                   <div className="space-y-3">
-                    <h4 className="text-xl font-bold text-white group-hover:text-blue-300 transition-colors">{feature.title}</h4>
-                    <p className="text-white/70 leading-relaxed">{feature.description}</p>
+                    <h4 className="text-xl font-bold text-white group-hover:text-blue-300 transition-colors">
+                      {feature.title}
+                    </h4>
+                    <p className="text-white/70 leading-relaxed">
+                      {feature.description}
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -315,21 +390,24 @@ export default function LandingPage() {
               {
                 step: "01",
                 title: "Scan & Identify",
-                description: "Use our mobile app to scan QR codes on plastic items or generate new ones for untracked waste.",
-                icon: "📱"
+                description:
+                  "Use our mobile app to scan QR codes on plastic items or generate new ones for untracked waste.",
+                icon: "📱",
               },
               {
-                step: "02", 
+                step: "02",
                 title: "Verify & Track",
-                description: "Our blockchain network verifies the item's authenticity and tracks its complete recycling journey.",
-                icon: "🔗"
+                description:
+                  "Our blockchain network verifies the item's authenticity and tracks its complete recycling journey.",
+                icon: "🔗",
               },
               {
                 step: "03",
                 title: "Earn & Impact",
-                description: "Receive instant cryptocurrency rewards while contributing to verified environmental impact metrics.",
-                icon: "💚"
-              }
+                description:
+                  "Receive instant cryptocurrency rewards while contributing to verified environmental impact metrics.",
+                icon: "💚",
+              },
             ].map((step, index) => (
               <div key={step.step} className="relative text-center group">
                 <div className="relative">
@@ -340,9 +418,13 @@ export default function LandingPage() {
                     {step.step}
                   </div>
                 </div>
-                <h4 className="text-2xl font-bold text-white mb-4 group-hover:text-blue-300 transition-colors">{step.title}</h4>
-                <p className="text-white/70 leading-relaxed">{step.description}</p>
-                
+                <h4 className="text-2xl font-bold text-white mb-4 group-hover:text-blue-300 transition-colors">
+                  {step.title}
+                </h4>
+                <p className="text-white/70 leading-relaxed">
+                  {step.description}
+                </p>
+
                 {index < 2 && (
                   <div className="hidden md:block absolute top-12 left-full w-full h-0.5 bg-gradient-to-r from-blue-400 to-green-400 opacity-30 transform -translate-x-12" />
                 )}
@@ -369,14 +451,16 @@ export default function LandingPage() {
               { value: "2.5M+", label: "Plastic Items Recycled", icon: "♻️" },
               { value: "850T", label: "CO₂ Emissions Saved", icon: "🌍" },
               { value: "15K+", label: "Active Community Members", icon: "👥" },
-              { value: "₹25L+", label: "Rewards Distributed", icon: "💰" }
+              { value: "₹25L+", label: "Rewards Distributed", icon: "💰" },
             ].map((stat, index) => (
               <div key={stat.label} className="text-center group">
                 <div className="text-4xl mb-3">{stat.icon}</div>
                 <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white group-hover:scale-110 transition-transform mb-2">
                   {stat.value}
                 </div>
-                <div className="text-white/60 text-sm sm:text-base">{stat.label}</div>
+                <div className="text-white/60 text-sm sm:text-base">
+                  {stat.label}
+                </div>
                 <div className="w-12 h-0.5 bg-gradient-to-r from-blue-400 to-green-400 mx-auto mt-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
             ))}
@@ -400,20 +484,21 @@ export default function LandingPage() {
               </span>
             </h3>
             <p className="text-xl text-white/70 max-w-3xl mx-auto leading-relaxed">
-              Every role contributes to our mission. Choose your path and start earning rewards while building a sustainable future.
+              Every role contributes to our mission. Choose your path and start
+              earning rewards while building a sustainable future.
             </p>
           </div>
-          
+
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {roles.map((role, index) => (
-              <Card 
-                key={role.title} 
+              <Card
+                key={role.title}
                 className="group relative bg-white/5 backdrop-blur-md border border-white/20 hover:border-white/40 transition-all duration-500 cursor-pointer hover:scale-105 hover:-translate-y-2 p-6 sm:p-8 overflow-hidden"
                 onClick={() => handleRoleSelect(role.value as UserRole)}
               >
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                
+
                 <CardContent className="relative text-center p-0 space-y-4">
                   <div className="relative">
                     <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-green-400 rounded-2xl flex items-center justify-center mx-auto group-hover:rotate-12 group-hover:scale-110 transition-all duration-500 shadow-lg">
@@ -421,19 +506,23 @@ export default function LandingPage() {
                     </div>
                     <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-green-400 to-blue-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
                   </div>
-                  
+
                   <div className="space-y-2">
-                    <h4 className="text-xl font-bold text-white group-hover:text-green-300 transition-colors">{role.title}</h4>
+                    <h4 className="text-xl font-bold text-white group-hover:text-green-300 transition-colors">
+                      {role.title}
+                    </h4>
                     <div className="w-12 h-0.5 bg-gradient-to-r from-blue-400 to-green-400 mx-auto opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </div>
-                  
+
                   <p className="text-white/70 group-hover:text-white/90 transition-colors leading-relaxed text-sm">
                     {role.description}
                   </p>
-                  
+
                   <div className="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <ArrowRight className="w-4 h-4 text-green-400 group-hover:translate-x-1 transition-transform" />
-                    <span className="text-sm text-green-400 font-medium">Get Started</span>
+                    <span className="text-sm text-green-400 font-medium">
+                      Get Started
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -462,23 +551,28 @@ export default function LandingPage() {
             {[
               {
                 q: "How do I earn rewards through PlasticTrace?",
-                a: "Simply scan QR codes on plastic items using our mobile app. Each verified scan earns you cryptocurrency tokens instantly. The more you recycle, the more you earn!"
+                a: "Simply scan QR codes on plastic items using our mobile app. Each verified scan earns you cryptocurrency tokens instantly. The more you recycle, the more you earn!",
               },
               {
                 q: "Is my environmental impact really tracked?",
-                a: "Yes! Every action is recorded on the blockchain, creating an immutable record of your environmental contributions. You can view your complete impact history anytime."
+                a: "Yes! Every action is recorded on the blockchain, creating an immutable record of your environmental contributions. You can view your complete impact history anytime.",
               },
               {
                 q: "What types of plastic can I track?",
-                a: "All types of plastic waste can be tracked - from bottles and bags to packaging materials. If it doesn't have a QR code, you can generate one through our app."
+                a: "All types of plastic waste can be tracked - from bottles and bags to packaging materials. If it doesn't have a QR code, you can generate one through our app.",
               },
               {
                 q: "How secure are my earnings?",
-                a: "Your rewards are stored securely on the blockchain using industry-standard cryptographic protocols. Only you have access to your wallet and earnings."
-              }
+                a: "Your rewards are stored securely on the blockchain using industry-standard cryptographic protocols. Only you have access to your wallet and earnings.",
+              },
             ].map((faq, index) => (
-              <div key={index} className="bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:border-white/40 transition-all duration-300">
-                <h4 className="text-lg font-semibold text-white mb-3">{faq.q}</h4>
+              <div
+                key={index}
+                className="bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:border-white/40 transition-all duration-300"
+              >
+                <h4 className="text-lg font-semibold text-white mb-3">
+                  {faq.q}
+                </h4>
                 <p className="text-white/70 leading-relaxed">{faq.a}</p>
               </div>
             ))}
@@ -497,23 +591,28 @@ export default function LandingPage() {
             </span>
           </h3>
           <p className="text-xl text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed">
-            Join thousands of eco-warriors who are already earning rewards while saving our planet. Your sustainable journey starts with a single scan.
+            Join thousands of eco-warriors who are already earning rewards while
+            saving our planet. Your sustainable journey starts with a single
+            scan.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               className="group bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 text-white border-0 h-16 px-12 text-xl font-semibold rounded-2xl transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/25"
               onClick={() => setShowRoleSelection(true)}
             >
               <Play className="w-6 h-6 mr-3 group-hover:translate-x-1 transition-transform" />
               Start Earning Now
             </Button>
-            
+
             <div className="flex items-center gap-4 text-white/60">
               <div className="flex -space-x-3">
-                {[1,2,3,4].map(i => (
-                  <div key={i} className="w-10 h-10 bg-gradient-to-br from-blue-400 to-green-400 rounded-full border-2 border-white/20" />
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="w-10 h-10 bg-gradient-to-br from-blue-400 to-green-400 rounded-full border-2 border-white/20"
+                  />
                 ))}
               </div>
               <span className="text-sm">Join 15,000+ users</span>
@@ -532,7 +631,8 @@ export default function LandingPage() {
             <span className="text-white font-semibold">PlasticTrace</span>
           </div>
           <p className="text-white/60">
-            © 2024 PlasticTrace. Building a sustainable future with blockchain technology.
+            © 2024 PlasticTrace. Building a sustainable future with blockchain
+            technology.
           </p>
         </div>
       </footer>
