@@ -1,8 +1,12 @@
 // api/apiConfig.js
+import { URL } from "@/constants";
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: import.meta.env.DEV ? "http://localhost:5000/api" : "",
+  baseURL: URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 export default instance;

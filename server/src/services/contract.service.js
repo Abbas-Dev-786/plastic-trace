@@ -130,11 +130,26 @@ const registerRole = async (role) => {
   ) {
     throw new Error("Invalid role");
   }
-  return await prepareContractCall({
+  const transaction = await prepareContractCall({
     contract: contracts.roleManager,
     method: "function registerRole(bytes32 role)",
     params: [keccak256(toHex(role))],
   });
+
+  // Get the encoded data
+  const encodedData = await transaction.data();
+
+  // Return transaction parameters instead of the prepared transaction
+  return {
+    to: transaction.to,
+    data: encodedData,
+    value: "0", // or 0n if using BigInt
+    // You can also include the original parameters for frontend reconstruction
+    contractAddress: contracts.roleManager.address,
+    methodName: "registerRole",
+    params: [keccak256(toHex(role))],
+    role: role,
+  };
 };
 
 const scanQR = async (qrId) => {

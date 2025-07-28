@@ -28,13 +28,23 @@ import { WalletConnectButton } from "@/components/WalletConnectButton";
 import { useActiveAccount } from "thirdweb/react";
 import { useMutation } from "@tanstack/react-query";
 import { register } from "@/services/api.service";
+import { CHAIN_ID } from "@/constants";
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
-  role: z.enum(["individual", "organization", "collector"], {
-    required_error: "Please select a role",
-  }),
+  role: z.enum(
+    [
+      "ADMIN_ROLE",
+      "MANUFACTURER_ROLE",
+      "RECYCLER_ROLE",
+      "RAGPICKER_ROLE",
+      "CITIZEN_ROLE",
+    ],
+    {
+      required_error: "Please select a role",
+    }
+  ),
 });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -46,11 +56,34 @@ const Register = () => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: register,
-    onSuccess() {
-      alert("Registration successful!");
+    onSuccess(data) {
+      console.log("Registration successful:", data);
+
+      activeAccount
+        .sendTransaction({
+          ...data.transaction,
+          chainId: CHAIN_ID,
+          gas: BigInt(data.transaction.gas || 100000), // Set reasonable gas limit
+          gasPrice: undefined,
+        })
+        .then((d) => {
+          console.log(d);
+        })
+        .catch((e) => {
+          console.error("Transaction failed:", e);
+          toast({
+            title: "Transaction Failed",
+            description: e instanceof Error ? e.message : "An error occurred",
+            variant: "destructive",
+          });
+        });
     },
-    onError() {
-      alert("Registration failed. Please try again.");
+    onError(err) {
+      toast({
+        title: "Registration Failed",
+        description: err instanceof Error ? err.message : "An error occurred",
+        variant: "destructive",
+      });
     },
   });
 
@@ -63,7 +96,30 @@ const Register = () => {
     },
   });
 
-  const onSubmit = async (data: RegisterFormData) => {};
+  const onSubmit = async (data: RegisterFormData) => {
+    const message = `Register role: ${data.role}`;
+
+    const signature = await activeAccount.signMessage({
+      message,
+      chainId: CHAIN_ID,
+    });
+
+    if (signature) {
+      mutate({
+        role: data.role,
+        wallet: activeAccount.address || "",
+        name: data.name,
+        email: data.email,
+        signature,
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: "Failed to sign the message. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary via-primary-glow to-accent">

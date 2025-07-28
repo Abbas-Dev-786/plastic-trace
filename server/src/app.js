@@ -10,8 +10,8 @@ const analyticsRoutes = require("./routes/analytics.route");
 
 const app = express();
 
+app.use(cors({ origin: "*" }));
 app.use(helmet());
-app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
