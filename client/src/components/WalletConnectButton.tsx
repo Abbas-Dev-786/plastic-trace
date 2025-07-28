@@ -1,8 +1,6 @@
 import { ConnectButton, useActiveAccount } from "thirdweb/react";
-import { client } from "@/config/thirdweb.config";
+import { client, etherlinkTestnetChain } from "@/config/thirdweb.config";
 import { inAppWallet, createWallet } from "thirdweb/wallets";
-import { defineChain } from "thirdweb";
-import { CHAIN_ID } from "@/constants";
 
 const wallets = [
   inAppWallet({
@@ -16,8 +14,6 @@ const wallets = [
   createWallet("io.rabby"),
   createWallet("io.zerion.wallet"),
 ];
-
-const etherlinkTestnetChain = defineChain({ id: CHAIN_ID });
 
 export function WalletConnectButton() {
   const account = useActiveAccount();
