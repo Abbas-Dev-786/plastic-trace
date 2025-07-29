@@ -109,7 +109,7 @@ export default function AdminDashboard() {
       <div className="flex flex-col gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-            Admin Dashboard
+            Dashboard
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
             Monitor and manage the plastic waste tracking system
