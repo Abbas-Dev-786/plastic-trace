@@ -44,14 +44,6 @@ const kpiData = [
     icon: Users,
     color: "text-secondary",
   },
-  {
-    title: "CO₂ Saved",
-    value: "245 tons",
-    change: "+22.1%",
-    trend: "up",
-    icon: Leaf,
-    color: "text-accent",
-  },
 ];
 
 const recentActivity = [
@@ -123,7 +115,7 @@ export default function AdminDashboard() {
             Monitor and manage the plastic waste tracking system
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-3">
+        {/* <div className="flex flex-col sm:flex-row gap-3">
           <Button variant="outline" size="sm" className="w-full sm:w-auto">
             <Download className="w-4 h-4 mr-2" />
             Export Report
@@ -132,11 +124,11 @@ export default function AdminDashboard() {
             <Plus className="w-4 h-4 mr-2" />
             Generate QRs
           </Button>
-        </div>
+        </div> */}
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {kpiData.map((kpi, index) => (
           <Card key={index} className="hover:shadow-elegant transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -147,19 +139,18 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{kpi.value}</div>
-              <div className="flex items-center gap-1 text-sm">
+              {/* <div className="flex items-center gap-1 text-sm">
                 <TrendingUp className="w-3 h-3 text-success" />
                 <span className="text-success">{kpi.change}</span>
                 <span className="text-muted-foreground">from last month</span>
-              </div>
+              </div> */}
             </CardContent>
           </Card>
         ))}
       </div>
 
       {/* Content Grid */}
-      <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
-        {/* Activity Chart Area */}
+      {/* <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Recycling Activity</CardTitle>
@@ -178,7 +169,6 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* Milestones */}
         <Card>
           <CardHeader>
             <CardTitle>Progress Tracking</CardTitle>
@@ -201,7 +191,7 @@ export default function AdminDashboard() {
             ))}
           </CardContent>
         </Card>
-      </div>
+      </div> */}
 
       {/* Recent Activity */}
       <Card>
