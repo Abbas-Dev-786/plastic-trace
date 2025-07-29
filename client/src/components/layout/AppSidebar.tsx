@@ -69,7 +69,7 @@ const navigationItems = [
   },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ role }: { role?: string }) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
@@ -93,7 +93,9 @@ export function AppSidebar() {
           </div>
           {!collapsed && (
             <div>
-              <h2 className="text-base sm:text-lg font-semibold text-foreground">PlasticTrace</h2>
+              <h2 className="text-base sm:text-lg font-semibold text-foreground">
+                PlasticTrace
+              </h2>
               <p className="text-xs sm:text-sm text-muted-foreground">v1.0</p>
             </div>
           )}
@@ -119,7 +121,11 @@ export function AppSidebar() {
                       }
                     >
                       <item.icon className="w-5 h-5 shrink-0" />
-                      {!collapsed && <span className="text-sm sm:text-base">{item.title}</span>}
+                      {!collapsed && (
+                        <span className="text-sm sm:text-base">
+                          {item.title}
+                        </span>
+                      )}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

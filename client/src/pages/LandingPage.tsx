@@ -15,6 +15,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { WalletConnectButton } from "@/components/WalletConnectButton";
 import { NavLink, useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-ocean-cleanup.jpg";
+import useRole from "@/hooks/use-role";
 
 type UserRole =
   | "admin"
@@ -57,6 +58,7 @@ const roles = [
 ];
 
 export default function LandingPage() {
+  const { data } = useRole();
   const [showRoleSelection, setShowRoleSelection] = useState(false);
   const navigate = useNavigate();
 
@@ -127,12 +129,21 @@ export default function LandingPage() {
               >
                 FAQ
               </a>
-              <NavLink
-                to="/register"
-                className="text-white/80 hover:text-white transition-colors text-sm font-medium"
-              >
-                Register
-              </NavLink>
+              {data?.user?.role ? (
+                <NavLink
+                  to="/dashboard"
+                  className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+                >
+                  Dashboard
+                </NavLink>
+              ) : (
+                <NavLink
+                  to="/register"
+                  className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+                >
+                  Register
+                </NavLink>
+              )}
             </nav>
 
             {/* Mobile Menu Button & Wallet */}

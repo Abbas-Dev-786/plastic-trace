@@ -21,13 +21,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Leaf } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { WalletConnectButton } from "@/components/WalletConnectButton";
 import { useActiveAccount } from "thirdweb/react";
 import { useMutation } from "@tanstack/react-query";
 import { register } from "@/services/api.service";
 import { CHAIN_ID } from "@/constants";
+import useRole from "@/hooks/use-role";
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -50,6 +51,8 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 
 const Register = () => {
   const activeAccount = useActiveAccount();
+  const { data } = useRole();
+  const navigate = useNavigate();
 
   const { toast } = useToast();
 
@@ -66,7 +69,12 @@ const Register = () => {
           gasPrice: undefined,
         })
         .then((d) => {
-          console.log(d);
+          navigate("/dashboard", { replace: true });
+          toast({
+            title: "Registration Successful",
+            description: "Your account has been created successfully!",
+            variant: "default",
+          });
         })
         .catch((e) => {
           console.error("Transaction failed:", e);
@@ -132,6 +140,12 @@ const Register = () => {
         <header className="p-4 sm:p-6">
           <div className="max-w-7xl mx-auto flex flex-row-reverse items-center justify-between">
             <WalletConnectButton />
+
+            {data?.user?.role ? (
+              <p className="text-white/70 text-sm underline underline-offset-2">
+                <Link to={"/dashboard"}>Dashboard</Link>
+              </p>
+            ) : null}
 
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center">
@@ -315,9 +329,20 @@ const Register = () => {
                           Please connect your wallet
                         </p>
                       )}
+                      {data?.user?.role && (
+                        <p className="text-sm text-center text-red-600 mb-1">
+                          Already registered with role: {data.user.role}
+                        </p>
+                      )}
                       <Button
                         type="submit"
-                        disabled={activeAccount?.address ? isPending : true}
+                        disabled={
+                          activeAccount?.address
+                            ? data?.user?.role
+                              ? true
+                              : isPending
+                            : true
+                        }
                         className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/20 font-medium"
                       >
                         {isPending ? "Creating Account..." : "Create Account"}

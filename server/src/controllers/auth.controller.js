@@ -26,3 +26,22 @@ exports.registerRole = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+exports.getUser = async (req, res) => {
+  try {
+    const { wallet } = req.params;
+    if (!wallet) throw new Error("Wallet address is required");
+
+    const user = await User.findOne({ walletAddress: wallet });
+    if (!user) throw new Error("User not found");
+
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error("Error in getUser:", {
+      message: error.message,
+      stack: error.stack,
+      params: req.params,
+    });
+    res.status(400).json({ error: error.message });
+  }
+};
