@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
   QrCode,
@@ -7,7 +6,6 @@ import {
   Wallet,
   Users,
   Trophy,
-  Settings,
   Recycle,
   Leaf,
 } from "lucide-react";
@@ -22,66 +20,67 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   useSidebar,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
+import { ROLES } from "@/constants";
 
 const navigationItems = [
   {
     title: "Dashboard",
     url: "/dashboard",
     icon: LayoutDashboard,
-    roles: ["admin", "manufacturer", "recycler"],
+    roles: [ROLES.ADMIN, ROLES.MANUFACTURER, ROLES.RECYCLER],
   },
   {
     title: "QR Manager",
     url: "/qr-manager",
     icon: QrCode,
-    roles: ["admin", "manufacturer"],
+    roles: [ROLES.ADMIN, ROLES.MANUFACTURER],
   },
   {
     title: "Scanner",
     url: "/scanner",
     icon: Camera,
-    roles: ["rag-picker"],
+    roles: [ROLES.RAG_PICKER, ROLES.ADMIN],
   },
   {
     title: "Wallet",
     url: "/wallet",
     icon: Wallet,
-    roles: ["rag-picker", "recycler", "citizen"],
+    roles: [
+      ROLES.RAG_PICKER,
+      ROLES.RECYCLER,
+      ROLES.CITIZEN,
+      ROLES.ADMIN,
+      ROLES.MANUFACTURER,
+    ],
   },
   {
     title: "Verification",
     url: "/verification",
     icon: Recycle,
-    roles: ["recycler"],
+    roles: [ROLES.ADMIN, ROLES.MANUFACTURER, ROLES.RECYCLER],
   },
   {
     title: "Leaderboard",
     url: "/leaderboard",
     icon: Trophy,
-    roles: ["all"],
+    roles: Object.values(ROLES),
   },
   {
     title: "Profile",
     url: "/profile",
     icon: Users,
-    roles: ["all"],
+    roles: Object.values(ROLES),
   },
 ];
 
 export function AppSidebar({ role }: { role?: string }) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
-  const currentPath = location.pathname;
-
-  // Mock user role - in real app, this would come from auth context
-  const userRole = "admin"; // Change this to test different roles
-
-  const isActive = (path: string) => currentPath === path;
 
   const filteredItems = navigationItems.filter(
-    (item) => item.roles.includes("all") || item.roles.includes(userRole)
+    (item) => item.roles.includes("all") || item.roles.includes(role || "")
   );
 
   return (
@@ -134,6 +133,10 @@ export function AppSidebar({ role }: { role?: string }) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter className="p-3 sm:p-4">
+        <p className="text-sm text-center">Role:- {role}</p>
+      </SidebarFooter>
     </Sidebar>
   );
 }
