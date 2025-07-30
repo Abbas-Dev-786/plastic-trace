@@ -1,8 +1,21 @@
 import { useState } from "react";
-import { Plus, Download, Search, Filter, MoreHorizontal, QrCode } from "lucide-react";
+import {
+  Plus,
+  Download,
+  Search,
+  Filter,
+  MoreHorizontal,
+  QrCode,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -19,17 +32,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import GenerateQrDialog from "@/components/qr/generate-qr-dialog";
 
 const qrData = [
   {
@@ -43,7 +46,7 @@ const qrData = [
     scannedAt: null,
   },
   {
-    id: "QR002", 
+    id: "QR002",
     code: "QR-2024-002",
     productType: "Food Container",
     manufacturer: "GreenPack Inc",
@@ -88,7 +91,7 @@ export default function QRManager() {
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedCodes(qrData.map(item => item.id));
+      setSelectedCodes(qrData.map((item) => item.id));
     } else {
       setSelectedCodes([]);
     }
@@ -98,14 +101,15 @@ export default function QRManager() {
     if (checked) {
       setSelectedCodes([...selectedCodes, codeId]);
     } else {
-      setSelectedCodes(selectedCodes.filter(id => id !== codeId));
+      setSelectedCodes(selectedCodes.filter((id) => id !== codeId));
     }
   };
 
-  const filteredData = qrData.filter(item =>
-    item.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.productType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.manufacturer.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredData = qrData.filter(
+    (item) =>
+      item.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.productType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.manufacturer.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -114,73 +118,19 @@ export default function QRManager() {
       <div className="flex flex-col gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold">QR Code Manager</h1>
-          <p className="text-sm sm:text-base text-muted-foreground">Generate, assign, and track QR codes for plastic products</p>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Generate, assign, and track QR codes for plastic products
+          </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full">
-          <Button variant="outline" size="sm" className="w-full sm:w-auto">
+          {/* <Button variant="outline" size="sm" className="w-full sm:w-auto">
             <Download className="w-4 h-4 mr-2" />
             Export
-          </Button>
-          <Dialog open={isGenerateOpen} onOpenChange={setIsGenerateOpen}>
-            <DialogTrigger asChild>
-              <Button className="rounded-button w-full sm:w-auto">
-                <Plus className="w-4 h-4 mr-2" />
-                Generate QRs
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="w-[95vw] max-w-md mx-auto">
-              <DialogHeader>
-                <DialogTitle>Generate QR Codes</DialogTitle>
-                <DialogDescription>
-                  Create a new batch of QR codes for plastic products
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="quantity">Quantity</Label>
-                  <Input
-                    id="quantity"
-                    placeholder="100"
-                    className="w-full"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="manufacturer">Manufacturer</Label>
-                  <Select>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select manufacturer" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="ecocorp">EcoCorp Ltd</SelectItem>
-                      <SelectItem value="greenpack">GreenPack Inc</SelectItem>
-                      <SelectItem value="aquaclean">AquaClean Co</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="product-type">Product Type</Label>
-                  <Select>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select product type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="bottle">Plastic Bottle</SelectItem>
-                      <SelectItem value="container">Food Container</SelectItem>
-                      <SelectItem value="bag">Shopping Bag</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <DialogFooter className="flex flex-col sm:flex-row gap-2">
-                <Button variant="outline" onClick={() => setIsGenerateOpen(false)} className="w-full sm:w-auto">
-                  Cancel
-                </Button>
-                <Button onClick={() => setIsGenerateOpen(false)} className="w-full sm:w-auto">
-                  Generate
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          </Button> */}
+          <GenerateQrDialog
+            isGenerateOpen={isGenerateOpen}
+            setIsGenerateOpen={setIsGenerateOpen}
+          />
         </div>
       </div>
 
@@ -188,18 +138,24 @@ export default function QRManager() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total QR Codes</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total QR Codes
+            </CardTitle>
             <QrCode className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">12,483</div>
-            <p className="text-xs text-muted-foreground">+20% from last month</p>
+            <p className="text-xs text-muted-foreground">
+              +20% from last month
+            </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Available</CardTitle>
-            <Badge variant="secondary" className="text-xs">Ready</Badge>
+            <Badge variant="secondary" className="text-xs">
+              Ready
+            </Badge>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">3,742</div>
@@ -219,11 +175,15 @@ export default function QRManager() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Recycled</CardTitle>
-            <Badge variant="default" className="text-xs bg-success">Complete</Badge>
+            <Badge variant="default" className="text-xs bg-success">
+              Complete
+            </Badge>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">5,234</div>
-            <p className="text-xs text-muted-foreground">Successfully processed</p>
+            <p className="text-xs text-muted-foreground">
+              Successfully processed
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -233,8 +193,12 @@ export default function QRManager() {
         <CardHeader>
           <div className="flex flex-col gap-4">
             <div>
-              <CardTitle className="text-lg sm:text-xl">QR Code Inventory</CardTitle>
-              <CardDescription>Manage and track all generated QR codes</CardDescription>
+              <CardTitle className="text-lg sm:text-xl">
+                QR Code Inventory
+              </CardTitle>
+              <CardDescription>
+                Manage and track all generated QR codes
+              </CardDescription>
             </div>
             <div className="flex flex-col sm:flex-row gap-2">
               <div className="relative flex-1">
@@ -279,14 +243,20 @@ export default function QRManager() {
                     <TableCell>
                       <Checkbox
                         checked={selectedCodes.includes(item.id)}
-                        onCheckedChange={(checked) => handleSelectCode(item.id, checked as boolean)}
+                        onCheckedChange={(checked) =>
+                          handleSelectCode(item.id, checked as boolean)
+                        }
                       />
                     </TableCell>
                     <TableCell className="font-medium">{item.code}</TableCell>
                     <TableCell>{item.productType}</TableCell>
                     <TableCell>{item.manufacturer}</TableCell>
                     <TableCell>
-                      <Badge className={statusColors[item.status as keyof typeof statusColors]}>
+                      <Badge
+                        className={
+                          statusColors[item.status as keyof typeof statusColors]
+                        }
+                      >
                         {item.status}
                       </Badge>
                     </TableCell>
@@ -303,7 +273,9 @@ export default function QRManager() {
                           <DropdownMenuItem>View Details</DropdownMenuItem>
                           <DropdownMenuItem>Download QR</DropdownMenuItem>
                           <DropdownMenuItem>Assign User</DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive">
+                            Delete
+                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
@@ -321,11 +293,15 @@ export default function QRManager() {
                   <div className="flex items-center gap-3">
                     <Checkbox
                       checked={selectedCodes.includes(item.id)}
-                      onCheckedChange={(checked) => handleSelectCode(item.id, checked as boolean)}
+                      onCheckedChange={(checked) =>
+                        handleSelectCode(item.id, checked as boolean)
+                      }
                     />
                     <div>
                       <div className="font-medium text-sm">{item.code}</div>
-                      <div className="text-xs text-muted-foreground">{item.productType}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {item.productType}
+                      </div>
                     </div>
                   </div>
                   <DropdownMenu>
@@ -338,11 +314,13 @@ export default function QRManager() {
                       <DropdownMenuItem>View Details</DropdownMenuItem>
                       <DropdownMenuItem>Download QR</DropdownMenuItem>
                       <DropdownMenuItem>Assign User</DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                      <DropdownMenuItem className="text-destructive">
+                        Delete
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-                
+
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Manufacturer:</span>
@@ -350,7 +328,11 @@ export default function QRManager() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Status:</span>
-                    <Badge className={statusColors[item.status as keyof typeof statusColors]}>
+                    <Badge
+                      className={
+                        statusColors[item.status as keyof typeof statusColors]
+                      }
+                    >
                       {item.status}
                     </Badge>
                   </div>

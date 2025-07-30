@@ -1,4 +1,11 @@
-const { keccak256, toHex } = require("thirdweb");
+const {
+  keccak256,
+  toHex,
+  getContractEvents,
+  prepareEvent,
+  sendAndConfirmTransaction,
+  readContract,
+} = require("thirdweb");
 const { prepareContractCall, sendTransaction } = require("thirdweb");
 const {
   account,
@@ -30,6 +37,29 @@ const contracts = {
   ecoNFT: getContractInstance(process.env.CONTRACT_ECONFT, "EcoNFT"),
 };
 
+const readContractValue = async (contract, method, params) => {
+  const data = await readContract({
+    contract,
+    method,
+    params,
+  });
+
+  return data;
+};
+
+const getContractLatestEvent = async (contract, signature) => {
+  const events = await getContractEvents({
+    contract,
+    events: [
+      prepareEvent({ signature }), // event QRCodesGenerated(uint256[] qrIds)
+    ],
+  });
+
+  const latestEvent = events.length > 0 ? events.at(-1) : null;
+
+  return latestEvent;
+};
+
 /* Admin Actions (Server-Side Signing) */
 const generateQRCodes = async (amount) => {
   if (!Number.isInteger(Number(amount)) || amount <= 0 || amount > 1000) {
@@ -39,17 +69,12 @@ const generateQRCodes = async (amount) => {
     const transaction = await prepareContractCall({
       contract: contracts.qrManager,
       method: "function generateQRCodes(uint256 amount)",
-      params: [BigInt(amount)],
+      params: [amount],
     });
-    const tx = await sendTransaction({
-      transaction,
-      account,
-      chain: etherlinkTestnet,
-    });
-    const events = await contracts.qrManager.getEvents("QRCodesGenerated");
-    const qrIds =
-      events.length > 0 ? events[0].args.qrIds.map((id) => id.toString()) : [];
-    return { tx, qrIds };
+
+    const tx = await sendAndConfirmTransaction({ transaction, account });
+
+    return { tx };
   } catch (error) {
     console.error("Error in generateQRCodes:", {
       message: error.message,
@@ -223,4 +248,7 @@ module.exports = {
   getUserScans,
   getUserNFTCount,
   getTokenBalance,
+  contracts,
+  getContractLatestEvent,
+  readContractValue,
 };

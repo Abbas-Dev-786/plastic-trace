@@ -1,7 +1,8 @@
-const { ethers } = require("ethers");
 const contractService = require("../services/contract.service");
 const { getContractInstance } = require("../config/thirdweb.config");
 const QRData = require("../models/qr.model");
+const { keccak256, toHex } = require("thirdweb");
+const { ethers } = require("ethers");
 
 exports.generateQRCodes = async (req, res) => {
   try {
@@ -12,24 +13,30 @@ exports.generateQRCodes = async (req, res) => {
     const recoveredAddress = ethers.verifyMessage(message, signature);
     if (recoveredAddress.toLowerCase() !== wallet.toLowerCase())
       throw new Error("Invalid signature");
-    const roleManager = getContractInstance(
-      process.env.CONTRACT_ROLE_MANAGER,
-      "RoleManager"
+
+    // const isAdmin = await contractService.readContractValue(
+    //   contractService.contracts.roleManager,
+    //   "function hasRole(bytes32 role, address account) view returns (bool)",
+    //   [(keccak256(toHex("ADMIN_ROLE")), wallet)]
+    // );
+    // if (!isAdmin) throw new Error("Not an admin");
+
+    const { tx } = await contractService.generateQRCodes(amount);
+
+    const nextQrId = await contractService.readContractValue(
+      contractService.contracts.qrManager,
+      "function nextQrId() view returns (uint256)",
+      []
     );
-    const isAdmin = await roleManager.call("hasRole", [
-      ethers.utils.keccak256(ethers.utils.toUtf8Bytes("ADMIN_ROLE")),
-      wallet,
-    ]);
-    if (!isAdmin) throw new Error("Not an admin");
-    const { tx, qrIds } = await contractService.generateQRCodes(amount);
-    for (const qrId of qrIds) {
+
+    for (let i = Number(nextQrId) - amount; i < Number(nextQrId); i++) {
       await QRData.updateOne(
-        { qrId },
-        { status: "Assigned" },
+        { qrId: i },
+        { status: "Available" },
         { upsert: true }
       );
     }
-    res.json({ success: true, txHash: tx.transactionHash, qrIds });
+    res.json({ success: true, txHash: tx.transactionHash });
   } catch (error) {
     console.error("Error in generateQRCodes:", {
       message: error.message,

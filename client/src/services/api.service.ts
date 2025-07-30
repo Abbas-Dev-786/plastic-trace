@@ -9,3 +9,8 @@ export const getUser = async (address: any) => {
   const res = await instance.get(`/auth/users/${address}`);
   return res.data;
 };
+
+export const generateQr = async (data: any) => {
+  const res = await instance.post("/qr/generate", data);
+  return res.data;
+};

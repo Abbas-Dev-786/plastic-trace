@@ -7,8 +7,8 @@ const qrDataSchema = new mongoose.Schema(
     ipfsHash: String,
     status: {
       type: String,
-      enum: ["Assigned", "Scanned", "Verified", "Recycled"],
-      default: "Assigned",
+      enum: ["Available", "Assigned", "Scanned", "Verified", "Recycled"],
+      default: "Available",
     },
     ragPicker: { type: String, lowercase: true },
     recycler: { type: String, lowercase: true },

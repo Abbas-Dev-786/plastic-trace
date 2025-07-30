@@ -10,6 +10,7 @@ const etherlinkTestnet = defineChain({ id: 128123 });
 const account = privateKeyToAccount({
   privateKey: process.env.PRIVATE_KEY,
   chain: etherlinkTestnet, // Etherlink test-net
+  client,
 });
 
 const getContractInstance = (address, name) => {
