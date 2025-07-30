@@ -10,9 +10,19 @@ import {
 import { Badge } from "@/components/ui/badge";
 import GenerateQrDialog from "@/components/qr/generate-qr-dialog";
 import QrTable from "@/components/qr/qr-table";
+import { useQuery } from "@tanstack/react-query";
+import { getQrStats } from "@/services/api.service";
 
 export default function QRManager() {
   const [isGenerateOpen, setIsGenerateOpen] = useState(false);
+  const { data } = useQuery({
+    queryKey: ["qrStats"],
+    queryFn: getQrStats,
+    refetchOnWindowFocus: false,
+    select: (data) => data.data,
+  });
+
+  console.log(data);
 
   return (
     <div className="space-y-4 p-2 sm:p-4 lg:p-6">
@@ -46,7 +56,7 @@ export default function QRManager() {
             <QrCode className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12,483</div>
+            <div className="text-2xl font-bold">{data?.totalCount || 0}</div>
             <p className="text-xs text-muted-foreground">
               +20% from last month
             </p>
@@ -60,7 +70,9 @@ export default function QRManager() {
             </Badge>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3,742</div>
+            <div className="text-2xl font-bold">
+              {data?.stats?.Available || 0}
+            </div>
             <p className="text-xs text-muted-foreground">Unassigned codes</p>
           </CardContent>
         </Card>
@@ -70,7 +82,9 @@ export default function QRManager() {
             <Badge className="text-xs">Active</Badge>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">8,741</div>
+            <div className="text-2xl font-bold">
+              {data?.stats?.Scanned || 0}
+            </div>
             <p className="text-xs text-muted-foreground">In circulation</p>
           </CardContent>
         </Card>
@@ -82,7 +96,9 @@ export default function QRManager() {
             </Badge>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">5,234</div>
+            <div className="text-2xl font-bold">
+              {data?.stats?.Verified || 0}
+            </div>
             <p className="text-xs text-muted-foreground">
               Successfully processed
             </p>

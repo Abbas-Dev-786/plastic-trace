@@ -4,6 +4,7 @@ const QRData = require("../models/qr.model");
 const { keccak256, toHex } = require("thirdweb");
 const { ethers } = require("ethers");
 const factoryController = require("./factory.controller");
+const { catchAsync } = require("../utils/catchAsync");
 
 exports.generateQRCodes = async (req, res) => {
   try {
@@ -213,3 +214,34 @@ exports.distributeRewards = async (req, res) => {
 
 // get all docs function
 exports.getAllQrCodes = factoryController.getAllDocs(QRData);
+
+// get qr code stats
+exports.getQrCodeStats = catchAsync(async (req, res, next) => {
+  const data = await QRData.aggregate([
+    {
+      $group: {
+        _id: "$status",
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $project: {
+        status: "$_id",
+        count: 1,
+        _id: 0,
+      },
+    },
+  ]);
+
+  const totalCount = data.reduce((acc, item) => acc + item.count, 0);
+
+  const transformedData = data.reduce((acc, item) => {
+    acc[item.status] = item.count;
+    return acc;
+  }, {});
+
+  res.status(200).json({
+    status: "success",
+    data: { stats: transformedData, totalCount },
+  });
+});

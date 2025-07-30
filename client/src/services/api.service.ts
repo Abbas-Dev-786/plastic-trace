@@ -23,3 +23,8 @@ export const getAllQrCodes = async ({ queryKey }: { queryKey: QueryKey }) => {
   });
   return res.data;
 };
+
+export const getQrStats = async () => {
+  const res = await instance.get("/qr/stats");
+  return res.data;
+};

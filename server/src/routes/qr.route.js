@@ -11,5 +11,6 @@ router.post("/recycle", qrController.markRecycled);
 router.post("/distribute", qrController.distributeRewards);
 
 router.get("/all", qrController.getAllQrCodes);
+router.get("/stats", qrController.getQrCodeStats);
 
 module.exports = router;
