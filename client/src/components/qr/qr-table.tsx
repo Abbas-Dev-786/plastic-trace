@@ -20,6 +20,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllQrCodes } from "@/services/api.service";
 import { CustomPagination } from "@/components/ui/pagination";
 import { Skeleton } from "../ui/skeleton";
+import { QrDetailDialog } from "./qr-detail-dialog";
 
 const statusColors = {
   Available: "bg-muted text-muted-foreground",
@@ -32,6 +33,8 @@ const statusColors = {
 const limit = 10; // items per page
 const QrTable = () => {
   const [page, setPage] = useState(1);
+  const [selectedQr, setSelectedQr] = useState<any>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["qrCodes", { page, limit }],
@@ -87,8 +90,15 @@ const QrTable = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>View Details</DropdownMenuItem>
-                    <DropdownMenuItem>Download QR</DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedQr(item);
+                        setIsDetailOpen(true);
+                      }}
+                    >
+                      View Details
+                    </DropdownMenuItem>
+                    {/* <DropdownMenuItem>Download QR</DropdownMenuItem> */}
                     <DropdownMenuItem>Assign To Manufacturer</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -104,6 +114,12 @@ const QrTable = () => {
           )}
         </TableBody>
       </Table>
+
+      <QrDetailDialog
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        qrData={selectedQr}
+      />
 
       {!isLoading && (
         <CustomPagination
