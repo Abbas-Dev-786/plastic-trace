@@ -1,14 +1,5 @@
 import { useState } from "react";
-import {
-  Plus,
-  Download,
-  Search,
-  Filter,
-  MoreHorizontal,
-  QrCode,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { QrCode } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -17,100 +8,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import GenerateQrDialog from "@/components/qr/generate-qr-dialog";
-
-const qrData = [
-  {
-    id: "QR001",
-    code: "QR-2024-001",
-    productType: "Plastic Bottle",
-    manufacturer: "EcoCorp Ltd",
-    status: "assigned",
-    assignedTo: "Alice Cooper",
-    createdAt: "2024-01-15",
-    scannedAt: null,
-  },
-  {
-    id: "QR002",
-    code: "QR-2024-002",
-    productType: "Food Container",
-    manufacturer: "GreenPack Inc",
-    status: "scanned",
-    assignedTo: "Bob Wilson",
-    createdAt: "2024-01-14",
-    scannedAt: "2024-01-20",
-  },
-  {
-    id: "QR003",
-    code: "QR-2024-003",
-    productType: "Shopping Bag",
-    manufacturer: "EcoCorp Ltd",
-    status: "available",
-    assignedTo: null,
-    createdAt: "2024-01-13",
-    scannedAt: null,
-  },
-  {
-    id: "QR004",
-    code: "QR-2024-004",
-    productType: "Water Bottle",
-    manufacturer: "AquaClean Co",
-    status: "recycled",
-    assignedTo: "Carol Davis",
-    createdAt: "2024-01-12",
-    scannedAt: "2024-01-18",
-  },
-];
-
-const statusColors = {
-  available: "bg-muted text-muted-foreground",
-  assigned: "bg-secondary text-secondary-foreground",
-  scanned: "bg-primary text-primary-foreground",
-  recycled: "bg-success text-success-foreground",
-};
+import QrTable from "@/components/qr/qr-table";
 
 export default function QRManager() {
-  const [selectedCodes, setSelectedCodes] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const [isGenerateOpen, setIsGenerateOpen] = useState(false);
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedCodes(qrData.map((item) => item.id));
-    } else {
-      setSelectedCodes([]);
-    }
-  };
-
-  const handleSelectCode = (codeId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedCodes([...selectedCodes, codeId]);
-    } else {
-      setSelectedCodes(selectedCodes.filter((id) => id !== codeId));
-    }
-  };
-
-  const filteredData = qrData.filter(
-    (item) =>
-      item.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.productType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.manufacturer.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <div className="space-y-4 p-2 sm:p-4 lg:p-6">
@@ -200,7 +102,7 @@ export default function QRManager() {
                 Manage and track all generated QR codes
               </CardDescription>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2">
+            {/* <div className="flex flex-col sm:flex-row gap-2">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
@@ -213,79 +115,16 @@ export default function QRManager() {
               <Button variant="outline" size="icon" className="shrink-0">
                 <Filter className="w-4 h-4" />
               </Button>
-            </div>
+            </div> */}
           </div>
         </CardHeader>
         <CardContent className="p-0">
           {/* Desktop Table */}
-          <div className="hidden lg:block">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-12">
-                    <Checkbox
-                      checked={selectedCodes.length === qrData.length}
-                      onCheckedChange={handleSelectAll}
-                    />
-                  </TableHead>
-                  <TableHead>QR Code</TableHead>
-                  <TableHead>Product Type</TableHead>
-                  <TableHead>Manufacturer</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Assigned To</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead className="w-12"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredData.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>
-                      <Checkbox
-                        checked={selectedCodes.includes(item.id)}
-                        onCheckedChange={(checked) =>
-                          handleSelectCode(item.id, checked as boolean)
-                        }
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium">{item.code}</TableCell>
-                    <TableCell>{item.productType}</TableCell>
-                    <TableCell>{item.manufacturer}</TableCell>
-                    <TableCell>
-                      <Badge
-                        className={
-                          statusColors[item.status as keyof typeof statusColors]
-                        }
-                      >
-                        {item.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{item.assignedTo || "-"}</TableCell>
-                    <TableCell>{item.createdAt}</TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>View Details</DropdownMenuItem>
-                          <DropdownMenuItem>Download QR</DropdownMenuItem>
-                          <DropdownMenuItem>Assign User</DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <div className="block">
+            <QrTable />
           </div>
 
-          {/* Mobile Cards */}
+          {/* Mobile Cards 
           <div className="lg:hidden space-y-3 p-4">
             {filteredData.map((item) => (
               <Card key={item.id} className="p-4">
@@ -347,7 +186,7 @@ export default function QRManager() {
                 </div>
               </Card>
             ))}
-          </div>
+          </div>*/}
         </CardContent>
       </Card>
     </div>

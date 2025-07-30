@@ -10,4 +10,6 @@ router.post("/verify", qrController.verifyScan);
 router.post("/recycle", qrController.markRecycled);
 router.post("/distribute", qrController.distributeRewards);
 
+router.get("/all", qrController.getAllQrCodes);
+
 module.exports = router;

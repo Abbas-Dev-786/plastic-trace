@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const qrDataSchema = new mongoose.Schema(
   {
@@ -15,5 +16,7 @@ const qrDataSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+qrDataSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("QRData", qrDataSchema);

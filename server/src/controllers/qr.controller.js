@@ -3,6 +3,7 @@ const { getContractInstance } = require("../config/thirdweb.config");
 const QRData = require("../models/qr.model");
 const { keccak256, toHex } = require("thirdweb");
 const { ethers } = require("ethers");
+const factoryController = require("./factory.controller");
 
 exports.generateQRCodes = async (req, res) => {
   try {
@@ -209,3 +210,6 @@ exports.distributeRewards = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+// get all docs function
+exports.getAllQrCodes = factoryController.getAllDocs(QRData);

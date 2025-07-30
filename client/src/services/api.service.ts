@@ -1,4 +1,6 @@
 import instance from "@/config/api.config";
+import { IQRResponse } from "@/interfaces/qr.interface";
+import { QueryKey } from "@tanstack/react-query";
 
 export const register = async (data: any) => {
   const res = await instance.post("/auth/register", data);
@@ -12,5 +14,12 @@ export const getUser = async (address: any) => {
 
 export const generateQr = async (data: any) => {
   const res = await instance.post("/qr/generate", data);
+  return res.data;
+};
+
+export const getAllQrCodes = async ({ queryKey }: { queryKey: QueryKey }) => {
+  const res = await instance.get<IQRResponse>("/qr/all", {
+    params: queryKey[1],
+  });
   return res.data;
 };
