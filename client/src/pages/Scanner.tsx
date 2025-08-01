@@ -1,11 +1,24 @@
 import { useState } from "react";
-import { Camera, Zap, Target, Award, QrCode, CheckCircle, AlertCircle } from "lucide-react";
+import { Camera, Zap, Target, Award, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
+import BarcodeScanner from "react-qr-barcode-scanner";
 
 const scanHistory = [
   {
@@ -18,7 +31,7 @@ const scanHistory = [
   },
   {
     id: 2,
-    qrCode: "QR-2024-002", 
+    qrCode: "QR-2024-002",
     productType: "Food Container",
     timestamp: "2024-01-20 12:15",
     status: "verified",
@@ -35,13 +48,37 @@ const scanHistory = [
 ];
 
 const milestones = [
-  { title: "First Scan", target: 1, current: 1, reward: "10 PTC", completed: true },
-  { title: "10 Scans", target: 10, current: 3, reward: "25 PTC", completed: false },
-  { title: "Weekly Goal", target: 50, current: 3, reward: "100 PTC", completed: false },
-  { title: "Monthly Target", target: 200, current: 3, reward: "500 PTC", completed: false },
+  {
+    title: "First Scan",
+    target: 1,
+    current: 1,
+    reward: "10 PTC",
+    completed: true,
+  },
+  {
+    title: "10 Scans",
+    target: 10,
+    current: 3,
+    reward: "25 PTC",
+    completed: false,
+  },
+  {
+    title: "Weekly Goal",
+    target: 50,
+    current: 3,
+    reward: "100 PTC",
+    completed: false,
+  },
+  {
+    title: "Monthly Target",
+    target: 200,
+    current: 3,
+    reward: "500 PTC",
+    completed: false,
+  },
 ];
 
-export default function Scanner() {
+export default function ScannerPage() {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [lastScanResult, setLastScanResult] = useState<any>(null);
 
@@ -50,16 +87,22 @@ export default function Scanner() {
     // Simulate scan after 2 seconds
     setTimeout(() => {
       const mockScanResult = {
-        qrCode: "QR-2024-" + Math.floor(Math.random() * 1000).toString().padStart(3, '0'),
-        productType: ["Plastic Bottle", "Food Container", "Shopping Bag"][Math.floor(Math.random() * 3)],
+        qrCode:
+          "QR-2024-" +
+          Math.floor(Math.random() * 1000)
+            .toString()
+            .padStart(3, "0"),
+        productType: ["Plastic Bottle", "Food Container", "Shopping Bag"][
+          Math.floor(Math.random() * 3)
+        ],
         manufacturer: "EcoCorp Ltd",
         reward: Math.floor(Math.random() * 8) + 2,
         isValid: Math.random() > 0.1, // 90% chance of valid scan
       };
-      
+
       setLastScanResult(mockScanResult);
       setIsCameraOpen(false);
-      
+
       if (mockScanResult.isValid) {
         toast({
           title: "Scan Successful!",
@@ -80,7 +123,9 @@ export default function Scanner() {
       {/* Page Header */}
       <div className="text-center space-y-2 px-4">
         <h1 className="text-2xl sm:text-3xl font-bold">QR Scanner</h1>
-        <p className="text-sm sm:text-base text-muted-foreground">Scan plastic waste QR codes to earn rewards</p>
+        <p className="text-sm sm:text-base text-muted-foreground">
+          Scan plastic waste QR codes to earn rewards
+        </p>
       </div>
 
       {/* Scanner Section */}
@@ -97,12 +142,28 @@ export default function Scanner() {
         <CardContent className="space-y-6">
           <div className="w-48 sm:w-64 h-48 sm:h-64 mx-auto bg-muted/20 border-2 border-dashed border-muted-foreground/25 rounded-lg flex items-center justify-center">
             <div className="text-center">
-              <QrCode className="w-12 sm:w-16 h-12 sm:h-16 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-sm sm:text-base text-muted-foreground">Camera viewfinder</p>
+              <BarcodeScanner
+                width={500}
+                height={500}
+                facingMode="environment"
+                onUpdate={(err, result) => {
+                  if (result) console.log(result);
+                  else console.log("Not Found");
+                }}
+              />
+
+              <div className="mt-2">
+                <p className="text-xs text-muted-foreground">
+                  Scan a QR code to get started
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Ensure the QR code is clear and well-lit
+                </p>
+              </div>
             </div>
           </div>
-          
-          <Button 
+
+          {/* <Button 
             size="lg" 
             onClick={handleScan}
             className="w-full sm:w-auto rounded-button h-12 sm:h-14 text-base sm:text-lg"
@@ -119,7 +180,7 @@ export default function Scanner() {
                 Scan QR Code
               </>
             )}
-          </Button>
+          </Button> */}
         </CardContent>
       </Card>
 
@@ -135,7 +196,7 @@ export default function Scanner() {
             <p className="text-xs text-muted-foreground">+2 from yesterday</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Tokens Earned</CardTitle>
@@ -146,7 +207,7 @@ export default function Scanner() {
             <p className="text-xs text-muted-foreground">This week</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Impact Score</CardTitle>
@@ -163,7 +224,9 @@ export default function Scanner() {
       <Card>
         <CardHeader>
           <CardTitle>Progress & Milestones</CardTitle>
-          <CardDescription>Track your scanning achievements and unlock rewards</CardDescription>
+          <CardDescription>
+            Track your scanning achievements and unlock rewards
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {milestones.map((milestone, index) => (
@@ -177,15 +240,18 @@ export default function Scanner() {
                     )}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Reward: <span className="font-medium text-secondary">{milestone.reward}</span>
+                    Reward:{" "}
+                    <span className="font-medium text-secondary">
+                      {milestone.reward}
+                    </span>
                   </p>
                 </div>
                 <Badge variant={milestone.completed ? "default" : "secondary"}>
                   {milestone.current}/{milestone.target}
                 </Badge>
               </div>
-              <Progress 
-                value={(milestone.current / milestone.target) * 100} 
+              <Progress
+                value={(milestone.current / milestone.target) * 100}
                 className="h-2"
               />
             </div>
@@ -202,22 +268,35 @@ export default function Scanner() {
         <CardContent>
           <div className="space-y-4">
             {scanHistory.map((scan) => (
-              <div key={scan.id} className="flex items-center justify-between p-4 border rounded-lg">
+              <div
+                key={scan.id}
+                className="flex items-center justify-between p-4 border rounded-lg"
+              >
                 <div className="flex items-center gap-4">
                   <div className="w-2 h-2 bg-accent rounded-full" />
                   <div>
                     <p className="font-medium">{scan.qrCode}</p>
-                    <p className="text-sm text-muted-foreground">{scan.productType}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {scan.productType}
+                    </p>
                   </div>
                 </div>
                 <div className="text-right">
                   <div className="flex items-center gap-2 mb-1">
-                    <Badge variant={scan.status === "verified" ? "default" : "secondary"}>
+                    <Badge
+                      variant={
+                        scan.status === "verified" ? "default" : "secondary"
+                      }
+                    >
                       {scan.status}
                     </Badge>
-                    <span className="text-sm font-medium text-secondary">+{scan.reward}</span>
+                    <span className="text-sm font-medium text-secondary">
+                      +{scan.reward}
+                    </span>
                   </div>
-                  <p className="text-sm text-muted-foreground">{scan.timestamp}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {scan.timestamp}
+                  </p>
                 </div>
               </div>
             ))}
