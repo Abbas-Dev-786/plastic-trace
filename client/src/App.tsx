@@ -13,6 +13,7 @@ import Scanner from "./pages/Scanner";
 import WalletDashboard from "./pages/WalletDashboard";
 import Leaderboard from "./pages/Leaderboard";
 import NotFound from "./pages/NotFound";
+import Verification from "./pages/Verification";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
               <Route path="/dashboard" element={<AdminDashboard />} />
               <Route path="/qr-manager" element={<QRManager />} />
               <Route path="/scanner" element={<Scanner />} />
+              <Route path="/verification" element={<Verification />} />
               <Route path="/wallet" element={<WalletDashboard />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
             </Route>

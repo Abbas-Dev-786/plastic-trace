@@ -22,7 +22,6 @@ export default function QRManager() {
     select: (data) => data.data,
   });
 
-  console.log(data);
 
   return (
     <div className="space-y-4 p-2 sm:p-4 lg:p-6">

@@ -21,6 +21,8 @@ import { getAllQrCodes } from "@/services/api.service";
 import { CustomPagination } from "@/components/ui/pagination";
 import { Skeleton } from "../ui/skeleton";
 import { QrDetailDialog } from "./qr-detail-dialog";
+import useRole from "@/hooks/use-role";
+import { ROLES } from "@/constants";
 
 const statusColors = {
   Available: "bg-muted text-muted-foreground",
@@ -33,11 +35,19 @@ const statusColors = {
 const limit = 10; // items per page
 const QrTable = () => {
   const [page, setPage] = useState(1);
+  const { data: userRoleData } = useRole();
   const [selectedQr, setSelectedQr] = useState<any>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["qrCodes", { page, limit }],
+    queryKey: [
+      "qrCodes",
+      {
+        page,
+        limit,
+        status: userRoleData?.user?.role == ROLES.RECYCLER ? "Scanned" : null,
+      },
+    ],
     queryFn: getAllQrCodes,
   });
 
