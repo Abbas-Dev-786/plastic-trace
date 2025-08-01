@@ -18,7 +18,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
-import BarcodeScanner from "react-qr-barcode-scanner";
+import QrScanner from "@/components/qr/qr-scanner";
 
 const scanHistory = [
   {
@@ -140,28 +140,7 @@ export default function ScannerPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="w-48 sm:w-64 h-48 sm:h-64 mx-auto bg-muted/20 border-2 border-dashed border-muted-foreground/25 rounded-lg flex items-center justify-center">
-            <div className="text-center">
-              <BarcodeScanner
-                width={500}
-                height={500}
-                facingMode="environment"
-                onUpdate={(err, result) => {
-                  if (result) console.log(result);
-                  else console.log("Not Found");
-                }}
-              />
-
-              <div className="mt-2">
-                <p className="text-xs text-muted-foreground">
-                  Scan a QR code to get started
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Ensure the QR code is clear and well-lit
-                </p>
-              </div>
-            </div>
-          </div>
+          <QrScanner />
 
           {/* <Button 
             size="lg" 

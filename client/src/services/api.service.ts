@@ -28,3 +28,8 @@ export const getQrStats = async () => {
   const res = await instance.get("/qr/stats");
   return res.data;
 };
+
+export const scanQr = async (data: any) => {
+  const res = await instance.post("/qr/scan", data);
+  return res.data;
+};

@@ -89,7 +89,7 @@ export function QrDetailDialog({
                 value={`QR-2025-${qrData.qrId}`}
                 size={128}
                 bgColor="#ffffff"
-                fgColor="#208fb1"
+                fgColor="#000000"
               />
             </div>
           </div>

@@ -122,10 +122,12 @@ exports.scanQR = async (req, res) => {
     const { qrId, wallet, signature } = req.body;
     if (!qrId || !wallet || !signature)
       throw new Error("QR ID, wallet, and signature are required");
+
     const message = `Scan QR: ${qrId}`;
     const recoveredAddress = ethers.verifyMessage(message, signature);
     if (recoveredAddress.toLowerCase() !== wallet.toLowerCase())
       throw new Error("Invalid signature");
+
     const transaction = await contractService.scanQR(qrId);
     await QRData.updateOne(
       { qrId },
