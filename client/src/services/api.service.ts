@@ -45,3 +45,13 @@ export const getRecyclerLeaderboard = async () => {
   });
   return res.data;
 };
+
+export const verifyQrScan = async (data: any) => {
+  const res = await instance.post("/qr/verify", data);
+  return res.data;
+};
+
+export const rewardDistributor = async (data: any) => {
+  const res = await instance.post("/qr/distribute", data);
+  return res.data;
+};

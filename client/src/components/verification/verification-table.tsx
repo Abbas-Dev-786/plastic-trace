@@ -10,11 +10,18 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { Badge } from "../ui/badge";
-import { CheckCircle, Clock, Package, XCircle } from "lucide-react";
+import { Package } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
-import { getAllQrCodes } from "@/services/api.service";
-import { useQuery } from "@tanstack/react-query";
+import {
+  getAllQrCodes,
+  rewardDistributor,
+  verifyQrScan,
+} from "@/services/api.service";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CustomPagination } from "../ui/pagination";
+import { CHAIN_ID } from "@/constants";
+import { useToast } from "@/hooks/use-toast";
+import { useActiveAccount } from "thirdweb/react";
 
 const statusColors = {
   Available: "bg-muted text-muted-foreground",
@@ -39,6 +46,133 @@ const VerificationTable = () => {
     ],
     queryFn: getAllQrCodes,
   });
+
+  const activeAccount = useActiveAccount();
+
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { mutate: verifyMutate, isPending: isVerifyPending } = useMutation({
+    mutationFn: verifyQrScan,
+    onSuccess(data) {
+      console.log("Registration successful:", data);
+
+      activeAccount
+        .sendTransaction(data.transaction)
+        // .sendTransaction({
+        //   ...data.transaction,
+        //   // chainId: CHAIN_ID,
+        //   gas: BigInt(data.transaction.gas || 100000), // Set reasonable gas limit
+        //   // gasPrice: undefined,
+        // })
+        .then((d) => {
+          console.log("Transaction sent:", d);
+          queryClient.invalidateQueries({ queryKey: ["qrCodes"] });
+          toast({
+            title: "Verification Successfull",
+            description: "Your transaction has been sent successfully.",
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+          console.error("Transaction failed:", e);
+          toast({
+            title: "Transaction Failed",
+            description: e instanceof Error ? e.message : "An error occurred",
+            variant: "destructive",
+          });
+        });
+    },
+    onError(err) {
+      toast({
+        title: "Transaction Failed",
+        description: err instanceof Error ? err.message : "An error occurred",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const onVerifyBtnClick = async (qrId) => {
+    const message = `Verify QR: ${qrId}`;
+    const signature = await activeAccount.signMessage({
+      message,
+      chainId: CHAIN_ID,
+    });
+    if (signature) {
+      verifyMutate({
+        qrId,
+        wallet: activeAccount.address || "",
+        signature,
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: "Failed to sign the message. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const { mutate: rewardMutate, isPending: isRewardPending } = useMutation({
+    mutationFn: rewardDistributor,
+    onSuccess(data) {
+      console.log("Registration successful:", data);
+
+      activeAccount
+        .sendTransaction(data.transaction)
+        // .sendTransaction({
+        //   ...data.transaction,
+        //   // chainId: CHAIN_ID,
+        //   gas: BigInt(data.transaction.gas || 100000), // Set reasonable gas limit
+        //   // gasPrice: undefined,
+        // })
+        .then((d) => {
+          console.log("Transaction sent:", d);
+          queryClient.invalidateQueries({ queryKey: ["qrCodes"] });
+          toast({
+            title: "Reward distributed Successfully",
+            description: "Your transaction has been sent successfully.",
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+          console.error("Transaction failed:", e);
+          toast({
+            title: "Transaction Failed",
+            description: e instanceof Error ? e.message : "An error occurred",
+            variant: "destructive",
+          });
+        });
+    },
+    onError(err) {
+      toast({
+        title: "Transaction Failed",
+        description: err instanceof Error ? err.message : "An error occurred",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const onRewardBtnClick = async (qrId) => {
+    const message = `Distribute rewards for QR: ${qrId}`;
+    const signature = await activeAccount.signMessage({
+      message,
+      chainId: CHAIN_ID,
+    });
+    if (signature) {
+      rewardMutate({
+        qrId,
+        wallet: activeAccount.address || "",
+        signature,
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: "Failed to sign the message. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -101,13 +235,25 @@ const VerificationTable = () => {
                       {new Date(item.createdAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
-                      <Button
-                        size="sm"
-                        onClick={() => {}}
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        Verify
-                      </Button>
+                      {item.status == "Scanned" ? (
+                        <Button
+                          size="sm"
+                          disabled={isVerifyPending}
+                          onClick={() => onVerifyBtnClick(item.qrId)}
+                          className="bg-green-600 hover:bg-green-700"
+                        >
+                          Verify
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          disabled={isRewardPending}
+                          onClick={() => onRewardBtnClick(item.qrId)}
+                          className="bg-blue-600 hover:bg-blue-700"
+                        >
+                          Transfer Reward
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))

@@ -206,11 +206,27 @@ const scanQR = async (qrId) => {
 const verifyScan = async (qrId) => {
   if (!Number.isInteger(Number(qrId)) || qrId <= 0)
     throw new Error("Invalid QR ID");
-  return await prepareContractCall({
+
+  const transaction = await prepareContractCall({
     contract: contracts.recyclingTracker,
     method: "function verifyScan(uint256 qrId)",
-    params: [BigInt(qrId)],
+    params: [qrId],
   });
+
+  // Get the encoded data
+  const encodedData = await transaction.data();
+
+  // Return transaction parameters instead of the prepared transaction
+  return {
+    to: transaction.to,
+    data: encodedData,
+    value: "0", // or 0n if using BigInt
+    // You can also include the original parameters for frontend reconstruction
+    contractAddress: contracts.recyclingTracker.address,
+    methodName: "verifyScan",
+    params: [qrId],
+    qrId,
+  };
 };
 
 const markRecycled = async (qrId) => {
@@ -226,11 +242,25 @@ const markRecycled = async (qrId) => {
 const distributeRewards = async (qrId) => {
   if (!Number.isInteger(Number(qrId)) || qrId <= 0)
     throw new Error("Invalid QR ID");
-  return await prepareContractCall({
+
+  const transaction = await prepareContractCall({
     contract: contracts.rewardDistributor,
     method: "function distributeRewards(uint256 qrId)",
     params: [BigInt(qrId)],
   });
+
+  const encodedData = await transaction.data();
+
+  return {
+    to: transaction.to,
+    data: encodedData,
+    value: "0", // or 0n if using BigInt
+    // You can also include the original parameters for frontend reconstruction
+    contractAddress: contracts.rewardDistributor.address,
+    methodName: "distributeRewards",
+    params: [qrId],
+    qrId,
+  };
 };
 
 /* Read Functions */

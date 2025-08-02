@@ -4,13 +4,11 @@ import { scanQr } from "@/services/api.service";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import BarcodeScanner from "react-qr-barcode-scanner";
-import { useNavigate } from "react-router-dom";
 import { useActiveAccount } from "thirdweb/react";
 
 const QrScanner = () => {
   const [stop, setStop] = useState(false);
   const activeAccount = useActiveAccount();
-  const navigate = useNavigate();
 
   const { toast } = useToast();
 
