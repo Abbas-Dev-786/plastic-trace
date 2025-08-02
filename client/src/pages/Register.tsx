@@ -62,12 +62,13 @@ const Register = () => {
       console.log("Registration successful:", data);
 
       activeAccount
-        .sendTransaction({
-          ...data.transaction,
-          chainId: CHAIN_ID,
-          gas: BigInt(data.transaction.gas || 100000), // Set reasonable gas limit
-          gasPrice: undefined,
-        })
+        .sendTransaction(data.transaction)
+        // .sendTransaction({
+        //   ...data.transaction,
+        //   chainId: CHAIN_ID,
+        //   gas: BigInt(data.transaction.gas || 100000), // Set reasonable gas limit
+        //   gasPrice: undefined,
+        // })
         .then((d) => {
           navigate("/dashboard", { replace: true });
           toast({
