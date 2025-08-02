@@ -16,33 +16,6 @@ import { getAllQrCodes } from "@/services/api.service";
 import { useQuery } from "@tanstack/react-query";
 import { CustomPagination } from "../ui/pagination";
 
-const mockWasteItems = [
-  {
-    _id: "688a1606d898f021b4968de3",
-    qrId: 42,
-    createdAt: "2025-07-30T12:54:30.383Z",
-    status: "Scanned",
-    updatedAt: "2025-08-01T14:31:30.998Z",
-    ragPicker: "0xdae87f8605f873d1e85d7575cdc253fd24842f25",
-  },
-  {
-    _id: "688a1432d898f021b4968de2",
-    qrId: 41,
-    createdAt: "2025-07-30T12:46:42.684Z",
-    status: "Scanned",
-    updatedAt: "2025-08-01T14:34:05.212Z",
-    ragPicker: "0xdae87f8605f873d1e85d7575cdc253fd24842f25",
-  },
-  {
-    _id: "688a1360d898f021b4968de1",
-    qrId: 40,
-    createdAt: "2025-07-30T12:43:12.531Z",
-    status: "Scanned",
-    updatedAt: "2025-08-01T14:34:45.952Z",
-    ragPicker: "0xdae87f8605f873d1e85d7575cdc253fd24842f25",
-  },
-];
-
 const statusColors = {
   Available: "bg-muted text-muted-foreground",
   Assigned: "bg-secondary text-secondary-foreground",

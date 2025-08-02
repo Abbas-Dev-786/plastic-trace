@@ -33,3 +33,15 @@ export const scanQr = async (data: any) => {
   const res = await instance.post("/qr/scan", data);
   return res.data;
 };
+
+export const getLeaderboard = async () => {
+  const res = await instance.get("/analytics/leaderboard");
+  return res.data;
+};
+
+export const getRecyclerLeaderboard = async () => {
+  const res = await instance.get("/analytics/leaderboard", {
+    params: { groupBy: "recycler" },
+  });
+  return res.data;
+};

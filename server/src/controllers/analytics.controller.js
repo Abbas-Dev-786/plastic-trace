@@ -4,13 +4,35 @@ const QRData = require("../models/qr.model");
 
 exports.getLeaderboard = async (req, res) => {
   try {
-    const users = await User.find().sort({ scans: -1 }).limit(10);
-    res.json(
-      users.map((user) => ({
-        walletAddress: user.walletAddress,
-        scans: user.scans,
-      }))
-    );
+    const groupBy = req?.query?.groupBy || "ragPicker"; // ragPicker | recycler | manufacturer
+
+    const data = await QRData.aggregate([
+      // {
+      //   $match: { status: "Scanned" },
+      // },
+      { $group: { _id: `$${groupBy}`, count: { $sum: 1 } } },
+      {
+        $project: {
+          user: "$_id",
+          count: 1,
+          _id: 0,
+        },
+      },
+      {
+        $match: {
+          user: {
+            $ne: null,
+          },
+        },
+      },
+      {
+        $sort: {
+          count: -1,
+        },
+      },
+    ]);
+
+    res.status(200).json({ message: "success", data });
   } catch (error) {
     console.error("Error in getLeaderboard:", {
       message: error.message,
