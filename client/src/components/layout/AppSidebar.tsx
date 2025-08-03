@@ -59,7 +59,7 @@ const navigationItems = [
     title: "Verification",
     url: "/verification",
     icon: Recycle,
-    roles: [ROLES.ADMIN, ROLES.MANUFACTURER, ROLES.RECYCLER],
+    roles: [ROLES.MANUFACTURER, ROLES.RECYCLER],
   },
   {
     title: "Leaderboard",
@@ -67,12 +67,12 @@ const navigationItems = [
     icon: Trophy,
     roles: Object.values(ROLES),
   },
-  {
-    title: "Profile",
-    url: "/profile",
-    icon: Users,
-    roles: Object.values(ROLES),
-  },
+  // {
+  //   title: "Profile",
+  //   url: "/profile",
+  //   icon: Users,
+  //   roles: Object.values(ROLES),
+  // },
 ];
 
 export function AppSidebar({ role }: { role?: string }) {
