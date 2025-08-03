@@ -203,7 +203,7 @@ const QrLib = () => {
                 <div className="flex items-center justify-center text-sm">
                   <QRCode
                     value={`QR-2025-${qr.qrId}`}
-                    size={172}
+                    size={250}
                     bgColor="#ffffff"
                     fgColor="#000000"
                   />
