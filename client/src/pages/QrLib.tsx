@@ -1,14 +1,16 @@
 import { getAllQrCodes } from "@/services/api.service";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
-import { QrCode, Leaf } from "lucide-react";
+import { QrCode, Leaf, X } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import QRCode from "react-qr-code";
 import { CustomPagination } from "@/components/ui/pagination";
+import { WalletConnectButton } from "@/components/WalletConnectButton";
 
 const limit = 12;
 const QrLib = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [page, setPage] = useState(1);
   const { data, isLoading } = useQuery({
     queryKey: [
@@ -21,6 +23,14 @@ const QrLib = () => {
     ],
     queryFn: getAllQrCodes,
   });
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  };
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -74,21 +84,86 @@ const QrLib = () => {
             {/* Mobile Menu Button & Wallet */}
             <div className="flex items-center gap-2 sm:gap-4">
               {/* Mobile Menu Button */}
-              <button className="lg:hidden p-2 text-white/80 hover:text-white transition-colors">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
+              <button
+                className="lg:hidden p-2 text-white/80 hover:text-white transition-colors"
+                onClick={toggleMobileMenu}
+              >
+                {mobileMenuOpen ? (
+                  <X className="w-5 h-5" />
+                ) : (
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  </svg>
+                )}
               </button>
+
+              <div className="hidden sm:block">
+                <WalletConnectButton />
+              </div>
+
+              {/* Compact wallet button for mobile */}
+              <div className="sm:hidden">
+                <WalletConnectButton />
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          <div
+            className={`lg:hidden transition-all duration-300 ease-in-out overflow-hidden ${
+              mobileMenuOpen
+                ? "max-h-96 opacity-100 mt-4"
+                : "max-h-0 opacity-0 mt-0"
+            }`}
+          >
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 space-y-4">
+              <nav className="flex flex-col space-y-4">
+                <a
+                  href="#features"
+                  className="text-white/80 hover:text-white transition-colors text-base font-medium py-2 border-b border-white/10"
+                  onClick={closeMobileMenu}
+                >
+                  Features
+                </a>
+                <a
+                  href="#how-it-works"
+                  className="text-white/80 hover:text-white transition-colors text-base font-medium py-2 border-b border-white/10"
+                  onClick={closeMobileMenu}
+                >
+                  How It Works
+                </a>
+                <a
+                  href="#impact"
+                  className="text-white/80 hover:text-white transition-colors text-base font-medium py-2 border-b border-white/10"
+                  onClick={closeMobileMenu}
+                >
+                  Impact
+                </a>
+                <a
+                  href="#faq"
+                  className="text-white/80 hover:text-white transition-colors text-base font-medium py-2 border-b border-white/10"
+                  onClick={closeMobileMenu}
+                >
+                  FAQ
+                </a>
+                <NavLink
+                  to="/qrs"
+                  className="text-white/80 hover:text-white transition-colors text-base font-medium py-2 border-b border-white/10"
+                  onClick={closeMobileMenu}
+                >
+                  Qr Collection
+                </NavLink>
+              </nav>
             </div>
           </div>
         </div>

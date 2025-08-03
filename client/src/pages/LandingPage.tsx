@@ -9,6 +9,7 @@ import {
   Recycle,
   Play,
   Info,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -60,6 +61,7 @@ const roles = [
 export default function LandingPage() {
   const { data } = useRole();
   const [showRoleSelection, setShowRoleSelection] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleRoleSelect = (role: UserRole) => {
@@ -67,6 +69,14 @@ export default function LandingPage() {
     setTimeout(() => {
       navigate("/dashboard");
     }, 500);
+  };
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
   };
 
   return (
@@ -155,20 +165,27 @@ export default function LandingPage() {
             {/* Mobile Menu Button & Wallet */}
             <div className="flex items-center gap-2 sm:gap-4">
               {/* Mobile Menu Button */}
-              <button className="lg:hidden p-2 text-white/80 hover:text-white transition-colors">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
+              <button
+                className="lg:hidden p-2 text-white/80 hover:text-white transition-colors"
+                onClick={toggleMobileMenu}
+              >
+                {mobileMenuOpen ? (
+                  <X className="w-5 h-5" />
+                ) : (
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  </svg>
+                )}
               </button>
 
               <div className="hidden sm:block">
@@ -179,6 +196,72 @@ export default function LandingPage() {
               <div className="sm:hidden">
                 <WalletConnectButton />
               </div>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          <div
+            className={`lg:hidden transition-all duration-300 ease-in-out overflow-hidden ${
+              mobileMenuOpen
+                ? "max-h-96 opacity-100 mt-4"
+                : "max-h-0 opacity-0 mt-0"
+            }`}
+          >
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 space-y-4">
+              <nav className="flex flex-col space-y-4">
+                <a
+                  href="#features"
+                  className="text-white/80 hover:text-white transition-colors text-base font-medium py-2 border-b border-white/10"
+                  onClick={closeMobileMenu}
+                >
+                  Features
+                </a>
+                <a
+                  href="#how-it-works"
+                  className="text-white/80 hover:text-white transition-colors text-base font-medium py-2 border-b border-white/10"
+                  onClick={closeMobileMenu}
+                >
+                  How It Works
+                </a>
+                <a
+                  href="#impact"
+                  className="text-white/80 hover:text-white transition-colors text-base font-medium py-2 border-b border-white/10"
+                  onClick={closeMobileMenu}
+                >
+                  Impact
+                </a>
+                <a
+                  href="#faq"
+                  className="text-white/80 hover:text-white transition-colors text-base font-medium py-2 border-b border-white/10"
+                  onClick={closeMobileMenu}
+                >
+                  FAQ
+                </a>
+                <NavLink
+                  to="/qrs"
+                  className="text-white/80 hover:text-white transition-colors text-base font-medium py-2 border-b border-white/10"
+                  onClick={closeMobileMenu}
+                >
+                  Qr Collection
+                </NavLink>
+                {data?.user?.role ? (
+                  <NavLink
+                    to="/dashboard"
+                    className="text-white/80 hover:text-white transition-colors text-base font-medium py-2"
+                    onClick={closeMobileMenu}
+                  >
+                    Dashboard
+                  </NavLink>
+                ) : (
+                  <NavLink
+                    to="/register"
+                    className="text-white/80 hover:text-white transition-colors text-base font-medium py-2"
+                    onClick={closeMobileMenu}
+                  >
+                    Register
+                  </NavLink>
+                )}
+              </nav>
             </div>
           </div>
         </div>
