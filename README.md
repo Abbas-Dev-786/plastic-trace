@@ -25,6 +25,12 @@ Our platform delivers:
 - **Gamified dashboards and leaderboards** that enhance engagement and community pride.
 - **Open dashboards** for citizens and city officials to monitor and celebrate recycling progress.
 
+### Key Features
+- Immutable tracking on Etherlink
+- Token and NFT rewards
+- Public dashboards for citizens
+- Fraud-proof QR lifecycle
+
 ## [Tech Stack](#tech-stack)
 
 - **Blockchain:** Etherlink EVM-compatible Layer 2 — core smart contracts and trusted event logging.
@@ -55,7 +61,6 @@ Our platform delivers:
 - **Admin Tools:** Includes easy-to-use dashboards and proxy upgrade support for secure contract upgrades and role management.
 - **Developer Friendly:** Tools for fast local testing, gas estimation, and deployment to Etherlink testnets/mainnet with an optimized developer experience.
 
-**Look for `// SPONSOR TECH: Etherlink` and `// SPONSOR TECH: thirdweb` comments scattered through code for exact sponsor tech usage!**
 
 ### User Flow
 ```mermaid
@@ -125,6 +130,58 @@ sequenceDiagram
 - **Mobile-First QR Scanning:** Uses device cameras and browser APIs for simple, fast scan-and-submit flows.
 - **Role-Specific Dashboards:** Tailored views for Admin, Recycler, Rag Picker, and Citizen roles.
 - **Admin Console:** Manages user onboarding, QR code generation, and reward pool funding.
+
+```mermaid
+graph TD
+    A[Client<br><i>React + thirdweb</i>] -->|Calls| B[Smart Contracts<br><i>Etherlink</i>]
+    A -->|Fetches| C[Server<br><i>Node.js + MongoDB</i>]
+    B -->|Stores| D[Etherlink Blockchain]
+    C -->|Syncs| D
+    subgraph Contracts
+        B1[RoleManager]
+        B2[QRCodeManager]
+        B3[RecyclingTracker]
+        B4[EcoNFT]
+        B5[RewardToken]
+        B6[RewardDistributor]
+    end
+```
+
+## Installation and Setup
+### Prerequisites
+- Node.js (v14+)
+- Yarn or npm
+- Hardhat
+- MongoDB
+- MetaMask
+
+### Clone
+```bash
+git clone https://github.com/your-repo.git
+cd your-repo
+```
+
+### Contracts
+```bash
+cd contracts
+yarn install
+npx hardhat compile
+npx hardhat run scripts/deploy.js --network etherlink
+```
+
+### Server
+```bash
+cd ../server
+yarn install
+yarn start
+```
+
+### Client
+```bash
+cd ../client
+yarn install
+yarn start
+```
 
 ## Contribute and Collaborate
 
