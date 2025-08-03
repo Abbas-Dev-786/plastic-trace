@@ -1,96 +1,64 @@
-Plastic Waste Trace & Reward System
-A blockchain-based dApp to track plastic waste and reward recycling efforts with transparency.
+# ♻️ Plastic Waste Trace & Reward System
 
-Table of Contents
+> Empowering communities to recycle, trace, and get rewarded—leveraging blockchain, QR codes, and gamification for real-world sustainability!
 
-Project Overview
-Tech Stack
-Repository Structure
-User Flows
-System Architecture
-Plastic Waste Journey
-Installation and Setup
-Usage
-Contributing
-License
+## [Project Overview](#project-overview)
 
-Project Overview
-Tracks plastic waste from collection to recycling using QR codes on Etherlink. Rewards rag pickers and recyclers with tokens and NFTs via thirdweb. Ensures transparency and prevents fraud.
-Key Features
+**Plastic Waste Trace & Reward System** is a blockchain-powered platform designed to bring transparency, accountability, and real incentives to plastic recycling. By leveraging unique QR codes and smart contracts on **Etherlink**, the platform ensures every piece of plastic collected can be traced, verified, and rewarded. The core mission is to motivate effective community action, support rag pickers and recyclers, and provide cities with auditable recycling data in an open and secure environment.
 
-Immutable tracking on Etherlink
-Token and NFT rewards
-Public dashboards for citizens
-Fraud-proof QR lifecycle
+### Problem
 
-Tech Stack
+Plastic pollution is a major environmental challenge with serious urban impact:
 
-Blockchain: Etherlink - Smart contracts in contracts
-Frontend: React + thirdweb SDK in client
-Backend: Node.js/Express + MongoDB in server
-QR Scanning: Mobile-friendly dApp
+- Inefficient collection and tracking of recyclables.
+- Lack of trustworthy data on recycling rates and sources.
+- Unrecognized efforts of frontline collectors (rag pickers and recyclers).
+- Low community engagement due to lack of transparency and incentives.
 
-Sponsor Highlight
+### Solution
 
-Etherlink: Powers contracts for low-fee, fast transactions
-thirdweb: Enables wallet and contract interactions in client
+Our platform delivers:
 
-Repository Structure
+- **Unique QR codes** that physically and digitally track plastic throughout the collection and recycling lifecycle.
+- **Immutable blockchain records** on Etherlink for all actions (scan, verify, recycle), ensuring tamper-proof histories and accurate impact reporting.
+- **Automated, tokenized eco-rewards** for rag pickers and recyclers to incentivize consistent participation.
+- **Gamified dashboards and leaderboards** that enhance engagement and community pride.
+- **Open dashboards** for citizens and city officials to monitor and celebrate recycling progress.
 
-contracts: Solidity contracts (Etherlink)
-server: Node.js/Express + MongoDB for analytics
-client: React frontend with thirdweb SDK
+## [Tech Stack](#tech-stack)
 
-User Flows
-Admin
-Manages QR codes, roles, and rewards.
-graph TD
-    A[Login<br><i>thirdweb (client)</i>] --> B[Generate QR<br><i>QRCodeManager (contracts)</i>]
-    B --> C[Assign QR<br><i>QRCodeManager (contracts)</i>]
-    C --> D[Approve Roles<br><i>RoleManager (contracts)</i>]
-    D --> E[Fund Rewards<br><i>RewardToken (contracts)</i>]
-    E --> F[View Analytics<br><i>server + client</i>]
+- **Blockchain:** Etherlink EVM-compatible Layer 2 — core smart contracts and trusted event logging.
+- **Smart Contracts:**  
+  - RoleManager (permission control)  
+  - QRCodeManager (QR code generation and assignment)  
+  - RecyclingTracker (lifecycle event tracking)  
+  - RewardToken (ERC-20 eco-rewards)  
+  - RewardDistributor (automated payouts)
+- **Frontend:** React.js with **thirdweb SDK** for fast wallet connections, contract interaction, and seamless user onboarding.
+- **Backend:** Node.js + Express + MongoDB for fast analytics, dashboards, and session management.
+- **Web3 Tools:** thirdweb (wallet and contracts), Ethers.js.
+- **Development:** Hardhat (compile, test, deploy), OpenZeppelin (security best practices).
 
-Recycler
-Verifies collections and marks recycling.
-graph TD
-    A[Login<br><i>thirdweb (client)</i>] --> B[Receive QR<br><i>QRCodeManager (contracts)</i>]
-    B --> C[Verify QR<br><i>RecyclingTracker (contracts)</i>]
-    C --> D[Mark Recycled<br><i>RecyclingTracker (contracts)</i>]
-    D --> E[Earn Tokens<br><i>RewardDistributor (contracts)</i>]
+### 🏆 Sponsor Tech Highlights
 
-Rag Picker
-Collects plastics and earns rewards.
-graph TD
-    A[Login<br><i>thirdweb (client)</i>] --> B[Scan QR<br><i>RecyclingTracker (contracts)</i>]
-    B --> C[Deliver Plastics]
-    C --> D[Recycler Verifies]
-    D --> E[Earn Tokens<br><i>RewardDistributor (contracts)</i>]
-    D --> F[Earn NFT<br><i>EcoNFT (contracts)</i>]
+### Etherlink (by Trilitech & Tezos)
 
-Citizen
-Views recycling stats.
-graph TD
-    A[Access Dashboard<br><i>client</i>] --> B[View Plastics Recycled]
-    B --> C[View Leaderboards]
-    C --> D[Share Stats]
+- All critical smart contracts and immutable event logs run on **Etherlink’s** Layer 2 blockchain, capitalizing on ultra-low fees and sub-second confirmation times.
+- Full EVM compatibility lets us write and deploy Solidity contracts using familiar tooling like Hardhat and OpenZeppelin—enabling rapid, reliable development.
+- Sustainability-aligned, Etherlink uses an energy-efficient proof mechanism, keeping your environmental footprint minimal.
 
-System Architecture
-graph TD
-    A[Client<br><i>React + thirdweb</i>] -->|Calls| B[Smart Contracts<br><i>Etherlink</i>]
-    A -->|Fetches| C[Server<br><i>Node.js + MongoDB</i>]
-    B -->|Stores| D[Etherlink Blockchain]
-    C -->|Syncs| D
-    subgraph Contracts
-        B1[RoleManager]
-        B2[QRCodeManager]
-        B3[RecyclingTracker]
-        B4[EcoNFT]
-        B5[RewardToken]
-        B6[RewardDistributor]
-    end
+### Thirdweb
 
-Plastic Waste Journey
+- **User Authentication** & Wallet Management: Simplifies sign-in flows across all roles with React hooks (`ConnectWallet`) and secure wallet integrations.
+- **Contract Interaction:** Handles blockchain calls like QR scan logging and reward disbursement using the thirdweb React SDK, abstracting the complexities of Ethers.js.
+- **Token Management:** Our RewardToken derives from thirdweb's audited ERC-20 implementation, ensuring upgradability and compatibility.
+- **Admin Tools:** Includes easy-to-use dashboards and proxy upgrade support for secure contract upgrades and role management.
+- **Developer Friendly:** Tools for fast local testing, gas estimation, and deployment to Etherlink testnets/mainnet with an optimized developer experience.
+
+**Look for `// SPONSOR TECH: Etherlink` and `// SPONSOR TECH: thirdweb` comments scattered through code for exact sponsor tech usage!**
+
+### User Flow
+```mermaid
 sequenceDiagram
     participant A as Admin
     participant Q as QRCodeManager
@@ -113,50 +81,62 @@ sequenceDiagram
     D->>C: Mint Tokens
     T->>N: Check Milestone
     N->>R: Mint NFT
+```
 
-Installation and Setup
-Prerequisites
+### Flow Summary
 
-Node.js (v14+)
-Yarn or npm
-Hardhat
-MongoDB
-MetaMask
+1. **Admin:**
+   - Generates unique QR codes and assigns them to recyclers or collection points.
+   - Approves recyclers/rag pickers and manages reward pools.
+   - Monitors overall recycling progress via dashboards.
 
-Clone
-git clone https://github.com/your-repo.git
-cd your-repo
+2. **Recycler:**
+   - Receives and distributes QR codes.
+   - Verifies collected plastics scanned by rag pickers.
+   - Marks items as recycled to trigger rewards.
 
-Contracts
-cd contracts
-yarn install
-npx hardhat compile
-npx hardhat run scripts/deploy.js --network etherlink
+3. **Rag Picker:**
+   - Scans QR codes on collected plastic waste.
+   - Submits collection data on the mobile/web dApp.
+   - Earns eco-reward tokens for verified activities.
 
-Server
-cd ../server
-yarn install
-yarn start
+4. **Citizen/Public:**
+   - Observes community recycling efforts, leaderboards, and campaign impact.
+   - Engages by sharing and supporting eco-champions.
 
-Client
-cd ../client
-yarn install
-yarn start
+## [System Architecture](#system-architecture)
 
-Configuration
+### On-Chain (Etherlink Blockchain)
 
-Update contract addresses in client and server configs
-Set Etherlink RPC in hardhat.config.js
+- **Smart Contracts (Solidity):** Manage roles, QR lifecycle, recycling events, and reward distribution.
+- **Immutable Event Logs:** Every scan, verify, and recycle action is recorded with timestamps.
+- **Access Control:** RoleManager enforces restricted permissions for security.
+- **Reward Logic:** RewardDistributor contract automates payouts based on verified events.
 
-Usage
+### Off-Chain Backend & Analytics
 
-Admin: Manage QR, roles, rewards (client)
-Rag Picker: Scan QR, track rewards (client)
-Recycler: Verify, mark recycled (client + contracts)
-Citizen: View dashboards (client)
+- **MongoDB:** Stores user profiles, session data, and derived analytics (for fast dashboards).
+- **Express API:** Serves frontend requests for dashboards, leaderboards, and admin controls.
+- **Event Listeners:** Sync blockchain events to the DB for realtime UX.
 
-Contributing
-See CONTRIBUTING.md.
-License
-MIT License - see LICENSE.
-Powered by Etherlink and thirdweb
+### Frontend (React + thirdweb)
+
+- **Wallet Connection and Transactions:** Facilitated by thirdweb React SDK, ensuring easy and secure blockchain interactions.
+- **Mobile-First QR Scanning:** Uses device cameras and browser APIs for simple, fast scan-and-submit flows.
+- **Role-Specific Dashboards:** Tailored views for Admin, Recycler, Rag Picker, and Citizen roles.
+- **Admin Console:** Manages user onboarding, QR code generation, and reward pool funding.
+
+## Contribute and Collaborate
+
+Contributions, ideas, and feedback are welcome!  
+- Fork the repo  
+- Open issues or pull requests  
+- Join the discussion on community channels
+
+## License
+
+MIT License
+
+## Let’s build a cleaner, greener future—together! 🌱✨
+
+*Questions or feedback? Open an issue or DM the maintainer.*
