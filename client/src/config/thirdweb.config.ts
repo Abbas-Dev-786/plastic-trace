@@ -25,3 +25,9 @@ export const ecoNftContract = getContract({
   address: "0x02BAc327F2eA053B8C127ed47ED1d2cf48bEC5E3",
   chain: etherlinkTestnetChain,
 });
+
+export const rewardDistributorContract = getContract({
+  client,
+  address: "0xa0bbeaabcb900473f44d0e623ddf86902e7ca504",
+  chain: etherlinkTestnetChain,
+});

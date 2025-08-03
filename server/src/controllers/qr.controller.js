@@ -195,20 +195,15 @@ exports.markRecycled = async (req, res) => {
 
 exports.distributeRewards = async (req, res) => {
   try {
-    const { qrId, wallet, signature } = req.body;
-    if (!qrId || !wallet || !signature)
-      throw new Error("QR ID, wallet, and signature are required");
-    const message = `Distribute rewards for QR: ${qrId}`;
-    const recoveredAddress = ethers.verifyMessage(message, signature);
-    if (recoveredAddress.toLowerCase() !== wallet.toLowerCase())
-      throw new Error("Invalid signature");
-    const transaction = await contractService.distributeRewards(qrId);
+    const { qrId } = req.body;
+    if (!qrId) throw new Error("QR ID, is required");
+
     await QRData.updateOne(
       { qrId },
       { status: "Distributed" },
       { upsert: true }
     );
-    res.json({ success: true, transaction });
+    res.json({ success: true });
   } catch (error) {
     console.error("Error in distributeRewards:", {
       message: error.message,
