@@ -3,6 +3,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const { globalErrorHandler } = require("./controllers/error.controller");
+const AppError = require("./utils/AppError");
 
 const authRoutes = require("./routes/auth.route");
 const qrRoutes = require("./routes/qr.route");
