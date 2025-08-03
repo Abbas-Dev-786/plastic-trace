@@ -14,6 +14,7 @@ import WalletDashboard from "./pages/WalletDashboard";
 import Leaderboard from "./pages/Leaderboard";
 import NotFound from "./pages/NotFound";
 import Verification from "./pages/Verification";
+import QrLib from "./pages/QrLib";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/qrs" element={<QrLib />} />
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<AdminDashboard />} />
               <Route path="/qr-manager" element={<QRManager />} />

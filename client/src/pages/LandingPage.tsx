@@ -129,6 +129,12 @@ export default function LandingPage() {
               >
                 FAQ
               </a>
+              <NavLink
+                to="/qrs"
+                className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+              >
+                Qr Collection
+              </NavLink>
               {data?.user?.role ? (
                 <NavLink
                   to="/dashboard"
@@ -171,12 +177,7 @@ export default function LandingPage() {
 
               {/* Compact wallet button for mobile */}
               <div className="sm:hidden">
-                <Button
-                  size="sm"
-                  className="bg-white/20 hover:bg-white/30 text-white border-white/20 text-xs px-3 py-1"
-                >
-                  Connect
-                </Button>
+                <WalletConnectButton />
               </div>
             </div>
           </div>
