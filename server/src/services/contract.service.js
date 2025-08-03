@@ -246,7 +246,7 @@ const distributeRewards = async (qrId) => {
   const transaction = await prepareContractCall({
     contract: contracts.rewardDistributor,
     method: "function distributeRewards(uint256 qrId)",
-    params: [BigInt(qrId)],
+    params: [qrId],
   });
 
   const encodedData = await transaction.data();

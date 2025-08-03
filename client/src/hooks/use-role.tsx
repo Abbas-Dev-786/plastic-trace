@@ -1,4 +1,4 @@
-import { useActiveAccount, useReadContract } from "thirdweb/react";
+import { useActiveAccount } from "thirdweb/react";
 import { useQuery } from "@tanstack/react-query";
 import { getUser } from "@/services/api.service";
 

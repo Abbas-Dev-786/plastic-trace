@@ -20,6 +20,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { useActiveAccount, useReadContract } from "thirdweb/react";
+import { ecoRewardTokenContract } from "@/config/thirdweb.config";
+import { toTokens } from "thirdweb";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const tokenBalance = {
   ptc: 1247,
@@ -114,6 +118,18 @@ const milestones = [
 export default function WalletDashboard() {
   const [selectedTab, setSelectedTab] = useState("rewards");
 
+  const activeAccount = useActiveAccount();
+  const { data, isPending } = useReadContract({
+    contract: ecoRewardTokenContract,
+    method: "function balanceOf(address account) view returns (uint256)",
+    params: [activeAccount?.address],
+    queryOptions: {
+      enabled: Boolean(activeAccount?.address),
+    },
+  });
+
+  console.log(data);
+
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Page Header */}
@@ -155,7 +171,7 @@ export default function WalletDashboard() {
           <div className="space-y-4">
             <div>
               <div className="text-4xl font-bold text-white">
-                {tokenBalance.ptc.toLocaleString()} PTC
+                {isPending ? <Skeleton></Skeleton> : toTokens(data, 18)} PTC
               </div>
               {/* <div className="text-xl text-primary-foreground/80">
                 ≈ ${tokenBalance.usd.toLocaleString()}

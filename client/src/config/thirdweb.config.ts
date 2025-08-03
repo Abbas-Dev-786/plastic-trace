@@ -13,3 +13,9 @@ export const roleMangerContract = getContract({
   address: "0x8a6bb0d0527b39947c6aa89c6911f307919bbcb9",
   chain: etherlinkTestnetChain,
 });
+
+export const ecoRewardTokenContract = getContract({
+  client,
+  address: "0x2F117Db06F3eb1d4f3D0d265382e3794Ba8eB039",
+  chain: etherlinkTestnetChain,
+});

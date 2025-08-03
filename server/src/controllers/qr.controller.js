@@ -203,6 +203,11 @@ exports.distributeRewards = async (req, res) => {
     if (recoveredAddress.toLowerCase() !== wallet.toLowerCase())
       throw new Error("Invalid signature");
     const transaction = await contractService.distributeRewards(qrId);
+    await QRData.updateOne(
+      { qrId },
+      { status: "Distributed" },
+      { upsert: true }
+    );
     res.json({ success: true, transaction });
   } catch (error) {
     console.error("Error in distributeRewards:", {
