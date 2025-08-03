@@ -15,33 +15,6 @@ import { useActiveAccount, useReadContract } from "thirdweb/react";
 import { ecoRewardTokenContract } from "@/config/thirdweb.config";
 import { toTokens } from "thirdweb";
 
-const scanHistory = [
-  {
-    id: 1,
-    qrCode: "QR-2024-001",
-    productType: "Plastic Bottle",
-    timestamp: "2024-01-20 14:30",
-    status: "verified",
-    reward: "5 PTC",
-  },
-  {
-    id: 2,
-    qrCode: "QR-2024-002",
-    productType: "Food Container",
-    timestamp: "2024-01-20 12:15",
-    status: "verified",
-    reward: "3 PTC",
-  },
-  {
-    id: 3,
-    qrCode: "QR-2024-003",
-    productType: "Shopping Bag",
-    timestamp: "2024-01-19 16:45",
-    status: "pending",
-    reward: "2 PTC",
-  },
-];
-
 export default function ScannerPage() {
   const activeAccount = useActiveAccount();
 

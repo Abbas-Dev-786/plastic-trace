@@ -1,7 +1,7 @@
 import { CHAIN_ID } from "@/constants";
 import { useToast } from "@/hooks/use-toast";
 import { scanQr } from "@/services/api.service";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import BarcodeScanner from "react-qr-barcode-scanner";
 import { useActiveAccount } from "thirdweb/react";
@@ -12,6 +12,7 @@ const QrScanner = () => {
 
   const { toast } = useToast();
 
+  const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: scanQr,
     onSuccess(data) {
@@ -28,6 +29,7 @@ const QrScanner = () => {
         .then((d) => {
           setStop(false);
           console.log("Transaction sent:", d);
+          queryClient.invalidateQueries({ queryKey: ["user-stats"] });
           toast({
             title: "Qr Scanned Successfully",
             description: "Your transaction has been sent successfully.",
