@@ -11,7 +11,7 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CHAIN_ID } from "@/constants";
 import { useActiveAccount } from "thirdweb/react";
 import { useToast } from "@/hooks/use-toast";
@@ -24,12 +24,16 @@ const GenerateQrDialog = ({ isGenerateOpen, setIsGenerateOpen }: any) => {
 
   const { toast } = useToast();
 
+  const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: generateQr,
     onSuccess(data) {
       console.log("Registration successful:", data);
 
       setIsGenerateOpen(false);
+
+      queryClient.invalidateQueries({ queryKey: ["qrCodes"] });
+      queryClient.invalidateQueries({ queryKey: ["qrStats"] });
 
       toast({
         title: "QR Codes Generated",

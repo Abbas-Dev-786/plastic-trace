@@ -70,7 +70,7 @@ const QrTable = () => {
           <TableRow>
             <TableHead>QR Code</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Assigned To</TableHead>
+            {/* <TableHead>Assigned To</TableHead> */}
             <TableHead>Created</TableHead>
             <TableHead className="w-12"></TableHead>
           </TableRow>
@@ -88,7 +88,7 @@ const QrTable = () => {
                   {item.status}
                 </Badge>
               </TableCell>
-              <TableCell>{item.manufacturer}</TableCell>
+              {/* <TableCell>{item.manufacturer}</TableCell> */}
               <TableCell>
                 {new Date(item.createdAt).toLocaleDateString()}
               </TableCell>
@@ -109,7 +109,7 @@ const QrTable = () => {
                       View Details
                     </DropdownMenuItem>
                     {/* <DropdownMenuItem>Download QR</DropdownMenuItem> */}
-                    <DropdownMenuItem>Assign To Manufacturer</DropdownMenuItem>
+                    {/* <DropdownMenuItem>Assign To Manufacturer</DropdownMenuItem> */}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>

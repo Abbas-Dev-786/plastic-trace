@@ -238,7 +238,7 @@ const Register = () => {
                               defaultValue={field.value}
                               className="space-y-3"
                             >
-                              <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                              {/* <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                                 <RadioGroupItem
                                   value="MANUFACTURER_ROLE"
                                   id="MANUFACTURER_ROLE"
@@ -257,7 +257,7 @@ const Register = () => {
                                     lifecycle
                                   </p>
                                 </div>
-                              </div>
+                              </div> */}
 
                               <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                                 <RadioGroupItem

@@ -31,12 +31,12 @@ const roles = [
     description: "Manage the entire ecosystem with comprehensive controls",
     icon: Shield,
   },
-  {
-    title: "Manufacturer",
-    value: "manufacturer",
-    description: "Track products from creation to disposal lifecycle",
-    icon: Globe,
-  },
+  // {
+  //   title: "Manufacturer",
+  //   value: "manufacturer",
+  //   description: "Track products from creation to disposal lifecycle",
+  //   icon: Globe,
+  // },
   {
     title: "Rag Picker",
     value: "rag-picker",
@@ -506,7 +506,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {roles.map((role, index) => (
               <Card
                 key={role.title}
