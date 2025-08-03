@@ -55,3 +55,8 @@ export const rewardDistributor = async (data: any) => {
   const res = await instance.post("/qr/distribute", data);
   return res.data;
 };
+
+export const getUserStats = async ({ queryKey }: { queryKey: QueryKey }) => {
+  const res = await instance.get(`/qr/stats/${queryKey[1]}`);
+  return res.data;
+};

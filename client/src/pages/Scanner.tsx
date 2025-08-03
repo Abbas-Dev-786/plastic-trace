@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { Camera, Zap, Target, Award, CheckCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Camera, Zap, Target } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -8,17 +6,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { toast } from "@/hooks/use-toast";
 import QrScanner from "@/components/qr/qr-scanner";
+import { useQuery } from "@tanstack/react-query";
+import { getUserStats } from "@/services/api.service";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useActiveAccount, useReadContract } from "thirdweb/react";
+import { ecoRewardTokenContract } from "@/config/thirdweb.config";
+import { toTokens } from "thirdweb";
 
 const scanHistory = [
   {
@@ -47,76 +42,24 @@ const scanHistory = [
   },
 ];
 
-const milestones = [
-  {
-    title: "First Scan",
-    target: 1,
-    current: 1,
-    reward: "10 PTC",
-    completed: true,
-  },
-  {
-    title: "10 Scans",
-    target: 10,
-    current: 3,
-    reward: "25 PTC",
-    completed: false,
-  },
-  {
-    title: "Weekly Goal",
-    target: 50,
-    current: 3,
-    reward: "100 PTC",
-    completed: false,
-  },
-  {
-    title: "Monthly Target",
-    target: 200,
-    current: 3,
-    reward: "500 PTC",
-    completed: false,
-  },
-];
-
 export default function ScannerPage() {
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [lastScanResult, setLastScanResult] = useState<any>(null);
+  const activeAccount = useActiveAccount();
 
-  const handleScan = () => {
-    setIsCameraOpen(true);
-    // Simulate scan after 2 seconds
-    setTimeout(() => {
-      const mockScanResult = {
-        qrCode:
-          "QR-2024-" +
-          Math.floor(Math.random() * 1000)
-            .toString()
-            .padStart(3, "0"),
-        productType: ["Plastic Bottle", "Food Container", "Shopping Bag"][
-          Math.floor(Math.random() * 3)
-        ],
-        manufacturer: "EcoCorp Ltd",
-        reward: Math.floor(Math.random() * 8) + 2,
-        isValid: Math.random() > 0.1, // 90% chance of valid scan
-      };
+  const { data: tokenData, isPending } = useReadContract({
+    contract: ecoRewardTokenContract,
+    method: "function balanceOf(address account) view returns (uint256)",
+    params: [activeAccount?.address],
+    queryOptions: {
+      enabled: Boolean(activeAccount?.address),
+    },
+  });
 
-      setLastScanResult(mockScanResult);
-      setIsCameraOpen(false);
-
-      if (mockScanResult.isValid) {
-        toast({
-          title: "Scan Successful!",
-          description: `Earned ${mockScanResult.reward} PTC tokens`,
-        });
-      } else {
-        toast({
-          title: "Invalid QR Code",
-          description: "This QR code has already been scanned or is invalid",
-          variant: "destructive",
-        });
-      }
-    }, 2000);
-  };
+  const { data, isLoading } = useQuery({
+    queryKey: ["user-stats", activeAccount?.address],
+    queryFn: getUserStats,
+    select: (data) => data.data,
+    enabled: Boolean(activeAccount?.address),
+  });
 
   return (
     <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto p-4">
@@ -164,15 +107,14 @@ export default function ScannerPage() {
       </Card>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Today's Scans</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Scans</CardTitle>
             <Target className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3</div>
-            <p className="text-xs text-muted-foreground">+2 from yesterday</p>
+            <div className="text-2xl font-bold">{data?.length}</div>
           </CardContent>
         </Card>
 
@@ -182,61 +124,16 @@ export default function ScannerPage() {
             <Zap className="h-4 w-4 text-secondary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">47 PTC</div>
-            <p className="text-xs text-muted-foreground">This week</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Impact Score</CardTitle>
-            <Award className="h-4 w-4 text-accent" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">235</div>
-            <p className="text-xs text-muted-foreground">CO₂ points saved</p>
+            {isPending ? (
+              <Skeleton></Skeleton>
+            ) : (
+              <div className="text-2xl font-bold">
+                {toTokens(tokenData, 18)} PTC
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
-
-      {/* Milestones */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Progress & Milestones</CardTitle>
-          <CardDescription>
-            Track your scanning achievements and unlock rewards
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {milestones.map((milestone, index) => (
-            <div key={index} className="space-y-3">
-              <div className="flex justify-between items-center">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-medium">{milestone.title}</h4>
-                    {milestone.completed && (
-                      <CheckCircle className="w-4 h-4 text-success" />
-                    )}
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Reward:{" "}
-                    <span className="font-medium text-secondary">
-                      {milestone.reward}
-                    </span>
-                  </p>
-                </div>
-                <Badge variant={milestone.completed ? "default" : "secondary"}>
-                  {milestone.current}/{milestone.target}
-                </Badge>
-              </div>
-              <Progress
-                value={(milestone.current / milestone.target) * 100}
-                className="h-2"
-              />
-            </div>
-          ))}
-        </CardContent>
-      </Card>
 
       {/* Scan History */}
       <Card>
@@ -245,64 +142,41 @@ export default function ScannerPage() {
           <CardDescription>Your latest scanning activity</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {scanHistory.map((scan) => (
-              <div
-                key={scan.id}
-                className="flex items-center justify-between p-4 border rounded-lg"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-2 h-2 bg-accent rounded-full" />
-                  <div>
-                    <p className="font-medium">{scan.qrCode}</p>
+          {isLoading ? (
+            <Skeleton></Skeleton>
+          ) : (
+            <div className="space-y-4">
+              {data?.map((scan) => (
+                <div
+                  key={scan.qrId}
+                  className="flex items-center justify-between p-4 border rounded-lg"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-2 h-2 bg-accent rounded-full" />
+                    <div>
+                      <p className="font-medium">QR-2025-{scan.qrId}</p>
+                    </div>
+                  </div>
+                  <div className="text-right flex flex-col items-end gap-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge
+                        variant={
+                          scan.status === "Verified" ? "default" : "secondary"
+                        }
+                      >
+                        {scan.status}
+                      </Badge>
+                    </div>
                     <p className="text-sm text-muted-foreground">
-                      {scan.productType}
+                      {new Date(scan.updatedAt).toLocaleString()}
                     </p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge
-                      variant={
-                        scan.status === "verified" ? "default" : "secondary"
-                      }
-                    >
-                      {scan.status}
-                    </Badge>
-                    <span className="text-sm font-medium text-secondary">
-                      +{scan.reward}
-                    </span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    {scan.timestamp}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
-
-      {/* Camera Modal */}
-      <Dialog open={isCameraOpen} onOpenChange={setIsCameraOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Scanning QR Code</DialogTitle>
-            <DialogDescription>
-              Point your camera at the QR code
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex items-center justify-center py-8">
-            <div className="w-48 h-48 bg-black rounded-lg flex items-center justify-center">
-              <div className="text-white text-center">
-                <Camera className="w-12 h-12 mx-auto mb-2" />
-                <p>Camera Feed</p>
-                <div className="animate-pulse mt-2">Scanning...</div>
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

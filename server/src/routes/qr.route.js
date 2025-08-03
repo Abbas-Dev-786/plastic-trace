@@ -13,4 +13,6 @@ router.post("/distribute", qrController.distributeRewards);
 router.get("/all", qrController.getAllQrCodes); // ✅
 router.get("/stats", qrController.getQrCodeStats); // ✅
 
+router.get("/stats/:address", qrController.getQrCodeStatsUser); // ✅
+
 module.exports = router;

@@ -252,3 +252,13 @@ exports.getQrCodeStats = catchAsync(async (req, res, next) => {
     data: { stats: transformedData, totalCount },
   });
 });
+
+exports.getQrCodeStatsUser = catchAsync(async (req, res, next) => {
+  const address = req.params.address;
+
+  const data = await QRData.find({
+    ragPicker: address,
+  });
+
+  res.status(200).json({ message: "success", data });
+});
