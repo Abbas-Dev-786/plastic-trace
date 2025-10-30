@@ -1,5 +1,5 @@
 import { ConnectButton, useActiveAccount } from "thirdweb/react";
-import { client, etherlinkTestnetChain } from "@/config/thirdweb.config";
+import { client, flowTestnetChain } from "@/config/thirdweb.config";
 import { inAppWallet, createWallet } from "thirdweb/wallets";
 
 const wallets = [
@@ -27,8 +27,8 @@ export function WalletConnectButton() {
         connectModal={{ size: "compact", title: "PlasticTrace" }}
         wallets={wallets}
         theme={"light"}
-        chain={etherlinkTestnetChain}
-        chains={[etherlinkTestnetChain]}
+        chain={flowTestnetChain}
+        chains={[flowTestnetChain]}
       />
     </div>
   );

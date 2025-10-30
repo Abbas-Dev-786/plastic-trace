@@ -6,28 +6,28 @@ export const client = createThirdwebClient({
   clientId: import.meta.env.VITE_THIRDWEB_CLIENT_ID, // Get from your thirdweb
 });
 
-export const etherlinkTestnetChain = defineChain({ id: CHAIN_ID });
+export const flowTestnetChain = defineChain({ id: CHAIN_ID });
 
 export const roleMangerContract = getContract({
   client,
-  address: "0x8a6bb0d0527b39947c6aa89c6911f307919bbcb9",
-  chain: etherlinkTestnetChain,
+  address: "0x4663E1c09ea9c5120Bc757DD2478f5Ff3FcB6167",
+  chain: flowTestnetChain,
 });
 
 export const ecoRewardTokenContract = getContract({
   client,
-  address: "0x2F117Db06F3eb1d4f3D0d265382e3794Ba8eB039",
-  chain: etherlinkTestnetChain,
+  address: "0x12F763E90E1A76a1F811D20D976D525423FFC10d",
+  chain: flowTestnetChain,
 });
 
 export const ecoNftContract = getContract({
   client,
-  address: "0x02BAc327F2eA053B8C127ed47ED1d2cf48bEC5E3",
-  chain: etherlinkTestnetChain,
+  address: "0x566AC179DbFD2d02769dbF5494b620Aa42e0Af59",
+  chain: flowTestnetChain,
 });
 
 export const rewardDistributorContract = getContract({
   client,
-  address: "0xa0bbeaabcb900473f44d0e623ddf86902e7ca504",
-  chain: etherlinkTestnetChain,
+  address: "0xf4464df251228C40049F0b58676ae27096A8Ae2B",
+  chain: flowTestnetChain,
 });

@@ -10,7 +10,7 @@ const { prepareContractCall, sendTransaction } = require("thirdweb");
 const {
   account,
   getContractInstance,
-  etherlinkTestnet,
+  flowTestnet,
 } = require("../config/thirdweb.config");
 
 const contracts = {
@@ -101,7 +101,7 @@ const assignQR = async (qrId, manufacturer) => {
     const tx = await sendTransaction({
       transaction,
       account,
-      chain: etherlinkTestnet,
+      chain: flowTestnet,
     });
     return tx;
   } catch (error) {
@@ -128,7 +128,7 @@ const setQRMetadata = async (qrId, ipfsHash) => {
     const tx = await sendTransaction({
       transaction,
       account,
-      chain: etherlinkTestnet,
+      chain: flowTestnet,
     });
     return tx;
   } catch (error) {
